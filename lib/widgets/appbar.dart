@@ -6,9 +6,9 @@ PreferredSize buildAppBar(
     preferredSize: const Size.fromHeight(40.0), //appbar size
     child: AppBar(
       shadowColor: Colors.transparent,
-      backgroundColor: isDarkMode
-          ? const Color(0xff06090d)
-          : const Color(0xfff8f8f8), //appbar bg color
+      backgroundColor: //isDarkMode
+          //? const Color(0xff06090d)
+          const Color(0xfff8f8f8), //appbar bg color
       leading: Padding(
         padding: EdgeInsets.only(
           left: size.width * 0.05,
@@ -20,7 +20,9 @@ PreferredSize buildAppBar(
       titleSpacing: 0,
       leadingWidth: size.width * 0.15,
       title: Image.asset(
-        isDarkMode ? 'assets/icons/logo.jpeg' : 'assets/icons/logo.jpeg', //logo
+        isDarkMode
+            ? 'assets/icons/logo_traite.png'
+            : 'assets/icons/logo_traite.png', //logo
         height: size.height * 0.06,
         width: size.width * 0.95,
       ),

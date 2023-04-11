@@ -516,13 +516,14 @@ class _LoginPageState extends State<LoginPage> {
                                     : SizedBox(),
                                 SizedBox(height: 200),
                                 Text(
-                                  "V1.0.1",
+                                  "V0.0.1",
                                   style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: isDarkMode
-                                        ? Colors.black
-                                        : Colors.white,
-                                  ),
+                                      fontWeight: FontWeight.bold,
+                                      color: //isDarkMode
+
+                                          Colors.black
+                                      // : Colors.white,
+                                      ),
                                 ),
                                 SizedBox(
                                   height: 20,

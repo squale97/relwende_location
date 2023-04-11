@@ -54,7 +54,9 @@ class _ProductCategoriePageState extends State<ProductCategoriePage> {
     bool isDarkMode = brightness ==
         Brightness.dark; //check if device is in dark or light mode
     Color defaultColor =
-        isDarkMode ? Colors.white.withOpacity(0.8) : Colors.black;
+        //isDarkMode ? Colors.white.withOpacity(0.8) :
+
+        Colors.black;
     Color secondColor = /*isDarkMode ?*/ Colors.black /*: Colors.white*/;
     return Scaffold(
       appBar: AppBar(
@@ -84,6 +86,7 @@ class _ProductCategoriePageState extends State<ProductCategoriePage> {
                   final id = snapshot.data!.contenu![index].id.toString();
                   final cat = snapshot.data!.contenu![index].libeleCategorie;
                   final price = snapshot.data!.contenu![index].prix!.toDouble();
+                  final color = snapshot.data!.contenu![index].color!;
                   print("le id de l'image est :" + id!);
                   return buildProduct(
                     product_name!,
@@ -94,7 +97,8 @@ class _ProductCategoriePageState extends State<ProductCategoriePage> {
                     price!,
                     items[index]['colors'],
                     defaultColor, //default color
-                    secondColor, //second color
+                    secondColor,
+                    color, //second color
                     size, // device size
                   );
                 },

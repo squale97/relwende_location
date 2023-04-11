@@ -15,6 +15,7 @@ Center buildProduct(
   List colors,
   Color defaultColor,
   Color secondColor,
+  String color,
   Size size,
 ) {
   return Center(
@@ -33,6 +34,7 @@ Center buildProduct(
               assetURL: assetURL,
               rating: rating,
               price: price,
+              color: color,
               colors: colors,
             ),
           ),
@@ -140,7 +142,7 @@ Center buildProduct(
                       ),
                       child: Icon(
                         UniconsLine.info_circle,
-                        color: secondColor,
+                        color: Colors.white,
                         size: size.width * 0.055,
                       ),
                     ),

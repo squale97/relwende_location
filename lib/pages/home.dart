@@ -184,7 +184,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     bool isDarkMode = brightness ==
         Brightness.dark; //check if device is in dark or light mode
     Color defaultColor =
-        isDarkMode ? Colors.white.withOpacity(0.8) : Colors.black;
+        // isDarkMode ? Colors.white.withOpacity(0.8) :
+        Colors.black;
     Color secondColor = /*isDarkMode ?*/ Colors.black /*: Colors.white*/;
     return Scaffold(
       key: _key,
@@ -674,6 +675,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                                   .data!.contenu![index].libeleCategorie;
                               final price = snapshot.data!.contenu![index].prix!
                                   .toDouble();
+                              final color =
+                                  snapshot.data!.contenu![index].color!;
                               print("le id de l'image est :" + id!);
                               return buildProduct(
                                 product_name!,
@@ -684,7 +687,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                                 price!,
                                 items[index]['colors'],
                                 defaultColor, //default color
-                                secondColor, //second color
+                                secondColor,
+                                color, //second color
                                 size, // device size
                               );
                             },

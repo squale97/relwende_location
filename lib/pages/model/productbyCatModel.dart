@@ -34,6 +34,7 @@ class Contenu {
   String? image;
   String? libele;
   String? libeleCategorie;
+  String? color;
   int? prix;
   int? stock;
 
@@ -43,6 +44,7 @@ class Contenu {
       this.idCategorie,
       this.image,
       this.libele,
+      this.color,
       this.libeleCategorie,
       this.prix,
       this.stock});
@@ -56,6 +58,7 @@ class Contenu {
     libeleCategorie = json['libeleCategorie'];
     prix = json['prix'];
     stock = json['stock'];
+    color = json['couleur'];
   }
 
   Map<String, dynamic> toJson() {
@@ -68,6 +71,7 @@ class Contenu {
     data['libeleCategorie'] = this.libeleCategorie;
     data['prix'] = this.prix;
     data['stock'] = this.stock;
+    data['couleur'] = this.color;
     return data;
   }
 }

@@ -17,16 +17,18 @@ class DetailsPage extends StatefulWidget {
   final double price;
   final List colors;
   final String description;
-  const DetailsPage({
-    Key? key,
-    required this.description,
-    required this.name,
-    required this.room,
-    required this.assetURL,
-    required this.rating,
-    required this.price,
-    required this.colors,
-  }) : super(key: key);
+  final String color;
+  const DetailsPage(
+      {Key? key,
+      required this.description,
+      required this.name,
+      required this.room,
+      required this.assetURL,
+      required this.rating,
+      required this.price,
+      required this.colors,
+      required this.color})
+      : super(key: key);
 
   @override
   _DetailsPageState createState() => _DetailsPageState();
@@ -42,17 +44,19 @@ class _DetailsPageState extends State<DetailsPage> {
     bool isDarkMode = brightness ==
         Brightness.dark; //check if device is in dark or light mode
     Color defaultColor =
-        isDarkMode ? Colors.white.withOpacity(0.8) : Colors.black;
-    Color secondColor = isDarkMode ? Colors.black : Colors.white;
+        //isDarkMode ? Colors.white.withOpacity(0.8) :
+        Colors.black;
+    Color secondColor = //isDarkMode ? Colors.black :
+        Colors.white;
     return Scaffold(
       appBar: buildAppBar(
         InkWell(
           onTap: () => Get.back(),
           child: Icon(
             UniconsLine.arrow_circle_left,
-            color: isDarkMode
-                ? Colors.white
-                : const Color(0xff3b22a1), //icon bg color
+            color: //isDarkMode
+                // ? Colors.white
+                const Color(0xff3b22a1), //icon bg color
             size: size.height * 0.035,
           ),
         ),
@@ -69,9 +73,9 @@ class _DetailsPageState extends State<DetailsPage> {
           height: size.height,
           width: size.height,
           decoration: BoxDecoration(
-            color: isDarkMode
-                ? const Color(0xff06090d)
-                : const Color(0xfff8f8f8), //background color
+            color: //isDarkMode
+                // ? const Color(0xff06090d)
+                const Color(0xfff8f8f8), //background color
           ),
           child: SafeArea(
             child: Padding(
@@ -117,9 +121,12 @@ class _DetailsPageState extends State<DetailsPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       SizedBox(
-                        height: size.height * 0.08,
-                        width: size.width * 0.5,
-                        child: ListView.builder(
+                          height: size.height * 0.08,
+                          width: size.width * 0.5,
+                          child: Text("Couleur :" + widget.color,
+                              style: GoogleFonts.poppins(
+                                color: defaultColor,
+                              )) /*ListView.builder(
                           itemCount: widget.colors.length,
                           scrollDirection: Axis.horizontal,
                           primary: false,
@@ -133,14 +140,16 @@ class _DetailsPageState extends State<DetailsPage> {
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     border: Border.all(
-                                      color: isDarkMode
-                                          ? Colors.white
-                                          : Colors.black,
+                                      color: //isDarkMode
+                                          // ? Colors.white
+                                          Colors.black,
                                       width: 0.8,
                                     ),
                                   ),
-                                  child: buildColorPicker(
-                                      widget.colors[index], isDarkMode, size),
+                                  child:
+                                      SizedBox() /*buildColorPicker(
+                                      widget.colors[index], isDarkMode, size)*/
+                                  ,
                                 ),
                               );
                             }
@@ -148,15 +157,16 @@ class _DetailsPageState extends State<DetailsPage> {
                               onTap: () => setState(() {
                                 selectedColor = index;
                               }),
-                              child: buildColorPicker(
+                              child: Text("Couleur : " +
+                                  "noir"), /*buildColorPicker(
                                 widget.colors[index],
                                 isDarkMode,
                                 size,
-                              ),
+                              ),*/
                             );
                           },
-                        ),
-                      ),
+                        ),*/
+                          ),
                       Text(
                         '${widget.price}\$',
                         style: GoogleFonts.poppins(
