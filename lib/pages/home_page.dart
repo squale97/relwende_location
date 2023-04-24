@@ -48,8 +48,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       Home(
         isLoggedIn: widget.isLoggedin,
       ),
-      CategoryPage(),
-      CartScreen(),
+      CategoryPage(
+        isLoggedIn: widget.isLoggedin,
+        //counter: widget.counter,
+      ),
+      CartScreen(
+        isLoggedIn: isloggedin,
+      ),
       ProfilePage()
     ];
     Size size = MediaQuery.of(context).size; //check the size of device

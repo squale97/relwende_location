@@ -1,11 +1,23 @@
+import 'dart:convert';
+
+import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_ecommerce_app/appUrl.dart';
+import 'package:flutter_ecommerce_app/pages/cart/shopping_cart.dart';
 import 'package:flutter_ecommerce_app/pages/details_page.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unicons/unicons.dart';
+import 'package:http/http.dart' as http;
 
 Center buildProduct(
   // String category,
+  //int counter,
+  BuildContext context,
+  bool isLoggedIn,
+  // int userId,
+  int product,
   String name,
   String description,
   String room,
@@ -36,6 +48,8 @@ Center buildProduct(
               price: price,
               color: color,
               colors: colors,
+              productId: 1,
+              isLoggedIn: true,
             ),
           ),
           child: Column(
@@ -140,11 +154,65 @@ Center buildProduct(
                           ),
                         ),
                       ),
-                      child: Icon(
-                        UniconsLine.info_circle,
-                        color: Colors.white,
-                        size: size.width * 0.055,
-                      ),
+                      child: IconButton(
+                          onPressed: () async {
+                            String username = "54007038";
+                            String password = "2885351";
+                            print("clicked");
+                            String basicAuth = 'Basic ' +
+                                base64Encode(
+                                    utf8.encode('$username:$password'));
+                            if (isLoggedIn) {
+                              SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+
+                              //Return double
+                              int ID = prefs.getInt('ID');
+
+                              final response = await http.post(
+                                  Uri.parse(
+                                    AppUrl.url + 'cart/update',
+                                  ),
+                                  headers: <String, String>{
+                                    'authorization': basicAuth,
+                                    'Content-Type':
+                                        'application/json; charset=UTF-8'
+                                  },
+                                  body: jsonEncode({
+                                    "user": ID,
+                                    "product": product,
+                                  }));
+                              if (response.statusCode == 200) {
+                                //counter = counter + 1;
+                                // print("le counter est " + counter.toString());
+                                CoolAlert.show(
+                                  context: context,
+                                  type: CoolAlertType.success,
+                                  text: 'Produit ajouté avec succès',
+                                  autoCloseDuration: const Duration(seconds: 4),
+                                );
+
+                                print("ajouté");
+                              }
+                            } else {
+                              CoolAlert.show(
+                                context: context,
+                                type: CoolAlertType.info,
+                                text:
+                                    'Vous devez vous connecter pour accéder au panier',
+                                autoCloseDuration: const Duration(seconds: 4),
+                              );
+                              print("se connecter");
+                            }
+                            //Get.to(CartScreen());
+                            //}
+                          },
+                          icon: Icon(
+                            Icons.shopping_cart,
+                            //UniconsLine.info_circle,
+                            color: Colors.white,
+                            size: size.width * 0.055,
+                          )),
                     ),
                   ),
                 ],

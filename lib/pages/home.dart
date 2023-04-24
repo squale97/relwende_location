@@ -1,11 +1,19 @@
 import 'dart:convert';
+import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter_ecommerce_app/account/profile_page.dart';
 import 'package:flutter_ecommerce_app/account/signup.dart';
 import 'package:flutter_ecommerce_app/pages/cart/components/body.dart';
 import 'package:flutter_ecommerce_app/pages/cart/shopping_cart.dart';
 import 'package:flutter_ecommerce_app/pages/categories_products/product_byCategorie.dart';
 import 'package:flutter_ecommerce_app/pages/category.dart';
+import 'package:flutter_ecommerce_app/pages/commandes.dart';
+import 'package:flutter_ecommerce_app/pages/contact.dart';
+import 'package:flutter_ecommerce_app/pages/details_page.dart';
 import 'package:flutter_ecommerce_app/pages/model/categoryModel.dart';
+import 'package:flutter_ecommerce_app/pages/model/panierModel.dart';
+import 'package:get/get.dart';
+import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_ecommerce_app/account/login.dart';
@@ -33,6 +41,44 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> with TickerProviderStateMixin {
   List categories = [];
 
+  Future<PanierModel> fetchPanier() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    //Return double
+    int ID = prefs.getInt('ID');
+    String username = '54007038';
+    String password = '2885351';
+    String basicAuth =
+        'Basic ${base64Encode(utf8.encode('$username:$password'))}';
+
+    final response = await http.post(
+      AppUrl.url + "panierByUser",
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'authorization': basicAuth
+      },
+      body: jsonEncode({"clientId": ID}),
+    );
+    if (response.statusCode == 200) {
+      setState(() {
+        counter =
+            PanierModel.fromJson(jsonDecode(response.body)).contenu![0].taille!;
+        print("taille :" + counter.toString());
+      });
+      //print("ok");
+      //  print(response.body.toString());
+
+      //  setState(() {
+      //solde = Solde.fromJson(jsonDecode(response.body)).solde;
+      // });
+      // print(ProductByCategoryModel.fromJson(jsonDecode(response.body)).contenu);
+      return PanierModel.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to load Panier');
+    }
+  }
+
+  Future<ProductByCategoryModel>? _products;
   Future<ProductByCategoryModel> fetchProducts() async {
     String username = '54007038';
     String password = '2885351';
@@ -168,8 +214,13 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _key = GlobalKey(); // Create a key
   int selectedCategory = 0;
   int _selectedIndex = 0;
+  num counter = 0;
   @override
   void initState() {
+    if (widget.isLoggedIn!) {
+      fetchPanier();
+    }
+    _products = fetchProducts();
     // TODO: implement initState
     super.initState();
     // getCategories();
@@ -195,85 +246,100 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
             padding: EdgeInsets.only(
               right: size.width * 0.05,
             ),
-            child: IconButton(
-              onPressed: () {
-                if (widget.isLoggedIn!) {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => CartScreen()));
-                } else {
-                  showDialog(
-                      // barrierDismissible: false,
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Text("Alert"),
-                          content: Text(
-                              "Vous devez vous connecter pour accéder au panier"),
-                          actions: <Widget>[
-                            MaterialButton(
-                                onPressed: () {
-                                  //Navigator.of(context).pop();v
-                                  Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => LoginPage()));
-                                  /*Navigator.pushAndRemoveUntil(
-                                                                  context,
-                                                                  MaterialPageRoute(
-                                                                      builder:
-                                                                          (context) =>
-                                                                              LoginPage()));*/
-                                },
-                                child: Text("ok"))
-                          ],
+            child: /*Chip(
+      padding: EdgeInsets.all(0),
+      backgroundColor: Colors.deepPurple,
+      label: Text('BADGE', style: TextStyle(color: Colors.white)),
+    ),*/
+                Badge(
+              isLabelVisible: true,
+              label: widget.isLoggedIn == true
+                  ? Text(counter.toString())
+                  : Text("0"),
+              child: IconButton(
+                onPressed: () {
+                  if (widget.isLoggedIn == true) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CartScreen(
+                                  isLoggedIn: widget.isLoggedIn,
+                                )));
+                  } else {
+                    showDialog(
+                        // barrierDismissible: false,
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text("Alert"),
+                            content: Text(
+                                "Vous devez vous connecter pour accéder au panier"),
+                            actions: <Widget>[
+                              MaterialButton(
+                                  onPressed: () {
+                                    //Navigator.of(context).pop();v
+                                    Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => LoginPage()));
+                                    /*Navigator.pushAndRemoveUntil(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                        builder:
+                                                                            (context) =>
+                                                                                LoginPage()));*/
+                                  },
+                                  child: Text("ok"))
+                            ],
+                          );
+                        });
+                  }
+                  /* setState(() {
+                      if (customIcon.icon == Icons.search) {
+                        customIcon = Icon(
+                          Icons.cancel,
+                          color: Color(0xff3b22a1),
                         );
-                      });
-                }
-                /* setState(() {
-                    if (customIcon.icon == Icons.search) {
-                      customIcon = Icon(
-                        Icons.cancel,
-                        color: Color(0xff3b22a1),
-                      );
-                      customSearchBar = ListTile(
-                        leading: Icon(
+                        customSearchBar = ListTile(
+                          leading: Icon(
+                            Icons.search,
+                            color: Color(0xff3b22a1),
+                            size: 28,
+                          ),
+                          title: TextField(
+                            decoration: InputDecoration(
+                              hintText: "taper le nom d'un produit...",
+                              hintStyle: TextStyle(
+                                color: isDarkMode ? Colors.white : Colors.black,
+                                fontSize: 18,
+                                fontStyle: FontStyle.italic,
+                              ),
+                              border: InputBorder.none,
+                            ),
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                        );
+                      } else {
+                        customIcon = const Icon(
                           Icons.search,
                           color: Color(0xff3b22a1),
-                          size: 28,
-                        ),
-                        title: TextField(
-                          decoration: InputDecoration(
-                            hintText: "taper le nom d'un produit...",
-                            hintStyle: TextStyle(
-                              color: isDarkMode ? Colors.white : Colors.black,
-                              fontSize: 18,
-                              fontStyle: FontStyle.italic,
-                            ),
-                            border: InputBorder.none,
-                          ),
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                      );
-                    } else {
-                      customIcon = const Icon(
-                        Icons.search,
-                        color: Color(0xff3b22a1),
-                      );
-                      customSearchBar = Image.asset(
-                        'assets/icons/logo_traite.png',
-                        height: 60,
-                        width: 60,
-                        //style: TextStyle(color: Color(0xff3b22a1)),
-                      );
-                    }
-                  })*/
-                ;
-              },
-              icon: Icon(
-                UniconsLine.shopping_cart,
-                color: Color(0xff3b22a1),
+                        );
+                        customSearchBar = Image.asset(
+                          'assets/icons/logo_traite.png',
+                          height: 60,
+                          width: 60,
+                          //style: TextStyle(color: Color(0xff3b22a1)),
+                        );
+                      }
+                    })*/
+                  ;
+                },
+                icon: Icon(
+                  UniconsLine.shopping_cart,
+                  color: Color(0xff3b22a1),
+                ),
               ),
             ),
           )
@@ -432,7 +498,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                 style: TextStyle(color: Colors.white),
               ),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => OrderPage()));
               },
             ),
             widget.isLoggedIn == false
@@ -494,7 +561,9 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                 style: TextStyle(color: Colors.white),
               ),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ContactPage()));
+                //Navigator.pop(context);
               },
             ),
             widget.isLoggedIn == false
@@ -558,6 +627,51 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
               padding: EdgeInsets.only(top: size.height * 0.02),
               child: ListView(
                 children: [
+                  ImageSlideshow(
+                    /// Width of the [ImageSlideshow].
+                    width: double.infinity,
+
+                    /// Height of the [ImageSlideshow].
+                    height: 200,
+
+                    /// The page to show when first creating the [ImageSlideshow].
+                    initialPage: 0,
+
+                    /// The color to paint the indicator.
+                    indicatorColor: Colors.blue,
+
+                    /// The color to paint behind th indicator.
+                    indicatorBackgroundColor: Colors.grey,
+
+                    /// The widgets to display in the [ImageSlideshow].
+                    /// Add the sample image file into the images folder
+                    children: [
+                      Image.network(
+                        'https://oui-ceremonie.fr/wp-content/uploads/2019/10/tente-re%CC%81ception-location.png',
+                        fit: BoxFit.cover,
+                      ),
+                      Image.network(
+                        'https://s.alicdn.com/@sc04/kf/H8a0ee69cda114831b0ec4383f23a4639J.jpg',
+                        fit: BoxFit.cover,
+                      ),
+                      Image.network(
+                        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYUfNnBwujGG_UxWGlqyyyD7CBh95O7IAjOw&usqp=CAU',
+                        fit: BoxFit.cover,
+                      ),
+                    ],
+
+                    /// Called whenever the page in the center of the viewport changes.
+                    onPageChanged: (value) {
+                      print('Page changed: $value');
+                    },
+
+                    /// Auto scroll interval.
+                    /// Do not auto scroll with null or 0.
+                    autoPlayInterval: 3000,
+
+                    /// Loops back to first slide.
+                    isLoop: true,
+                  ),
                   Padding(
                     padding: EdgeInsets.symmetric(
                       horizontal: size.width * 0.02,
@@ -609,6 +723,9 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                                                   MaterialPageRoute(
                                                       builder: (context) =>
                                                           ProductCategoriePage(
+                                                            // counter: counter,
+                                                            isLoggedIn: widget
+                                                                .isLoggedIn,
                                                             catId: int.parse(
                                                                 cat_id),
                                                             catName: name,
@@ -650,7 +767,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                   SizedBox(
                     width: size.width,
                     child: FutureBuilder<ProductByCategoryModel>(
-                      future: fetchProducts(),
+                      future: _products,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           return GridView.builder(
@@ -671,6 +788,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                                   snapshot.data!.contenu![index].description;
                               final id =
                                   snapshot.data!.contenu![index].id.toString();
+                              final id_int = snapshot.data!.contenu![index].id;
                               final cat = snapshot
                                   .data!.contenu![index].libeleCategorie;
                               final price = snapshot.data!.contenu![index].prix!
@@ -678,7 +796,251 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                               final color =
                                   snapshot.data!.contenu![index].color!;
                               print("le id de l'image est :" + id!);
-                              return buildProduct(
+                              return Center(
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: size.width * 0.04,
+                                    ),
+                                    child: InkWell(
+                                      onTap: () => Get.to(
+                                        () => DetailsPage(
+                                          description: description!,
+                                          name: product_name!,
+                                          room: cat!,
+                                          assetURL: AppUrl.url +
+                                              'produitImages/' +
+                                              id!,
+                                          rating: 5,
+                                          price: price,
+                                          color: color,
+                                          colors: items[0]['colors'],
+                                          productId: id_int!,
+                                          isLoggedIn: widget.isLoggedIn!,
+                                        ),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          Image.network(
+                                            AppUrl.url + 'produitImages/' + id!,
+                                            height: size.width * 0.5,
+                                            width: size.width * 0.5,
+                                            fit: BoxFit.contain,
+                                            loadingBuilder: (context, child,
+                                                loadingProgress) {
+                                              if (loadingProgress == null) {
+                                                return child;
+                                              }
+                                              return SizedBox(
+                                                width: size.width * 0.5,
+                                                height: size.width * 0.5,
+                                                child: Align(
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                    color: defaultColor,
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                            errorBuilder:
+                                                (context, error, stackTrace) {
+                                              return Image.asset(
+                                                  "assets/icons/logo_traite.png",
+                                                  height: size.width * 0.5,
+                                                  width: size.width * 0.5,
+                                                  fit: BoxFit
+                                                      .contain); /*SizedBox(
+                                                width: size.width * 0.5,
+                                                height: size.width * 0.5,
+                                                child: Align(
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                    color: defaultColor,
+                                                  ),
+                                                ),
+                                              );*/
+                                            },
+                                          ),
+                                          Text(
+                                            cat!,
+                                            style: GoogleFonts.poppins(
+                                              color: defaultColor,
+                                              fontSize: size.height * 0.016,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: size.width * 0.5,
+                                            child: Text(
+                                              product_name!,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: GoogleFonts.lato(
+                                                color: defaultColor,
+                                                fontSize: size.height * 0.02,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: size.height * 0.02,
+                                            width: size.width * 0.3,
+                                            child: ListView.builder(
+                                              itemCount: 5,
+                                              scrollDirection: Axis.horizontal,
+                                              shrinkWrap: true,
+                                              itemBuilder: (context, index) {
+                                                if (index < 5) {
+                                                  return Icon(
+                                                    Icons.star,
+                                                    color: defaultColor,
+                                                    size: size.height * 0.025,
+                                                  );
+                                                } else {
+                                                  return Icon(
+                                                    Icons.star_outline,
+                                                    color: defaultColor,
+                                                    size: size.height * 0.025,
+                                                  );
+                                                }
+                                              },
+                                            ),
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                '$price\ frs',
+                                                style: GoogleFonts.poppins(
+                                                  color: defaultColor,
+                                                  fontSize: size.height * 0.02,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: size.width * 0.1,
+                                                width: size.width * 0.1,
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    color: defaultColor,
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                      Radius.circular(
+                                                        10,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  child: IconButton(
+                                                      onPressed: () async {
+                                                        String username =
+                                                            "54007038";
+                                                        String password =
+                                                            "2885351";
+                                                        print("clicked");
+                                                        String basicAuth =
+                                                            'Basic ' +
+                                                                base64Encode(
+                                                                    utf8.encode(
+                                                                        '$username:$password'));
+                                                        if (widget
+                                                            .isLoggedIn!) {
+                                                          SharedPreferences
+                                                              prefs =
+                                                              await SharedPreferences
+                                                                  .getInstance();
+
+                                                          //Return double
+                                                          int ID = prefs
+                                                              .getInt('ID');
+
+                                                          final response =
+                                                              await http.post(
+                                                                  Uri.parse(
+                                                                    AppUrl.url +
+                                                                        'cart/update',
+                                                                  ),
+                                                                  headers: <
+                                                                      String,
+                                                                      String>{
+                                                                    'authorization':
+                                                                        basicAuth,
+                                                                    'Content-Type':
+                                                                        'application/json; charset=UTF-8'
+                                                                  },
+                                                                  body:
+                                                                      jsonEncode({
+                                                                    "user": ID,
+                                                                    "product":
+                                                                        id_int,
+                                                                  }));
+                                                          if (response
+                                                                  .statusCode ==
+                                                              200) {
+                                                            setState(() {
+                                                              counter =
+                                                                  counter + 1;
+                                                            });
+
+                                                            print("le counter est " +
+                                                                counter
+                                                                    .toString());
+                                                            CoolAlert.show(
+                                                              context: context,
+                                                              type:
+                                                                  CoolAlertType
+                                                                      .success,
+                                                              text:
+                                                                  'Produit ajouté avec succès',
+                                                              autoCloseDuration:
+                                                                  const Duration(
+                                                                      seconds:
+                                                                          2),
+                                                            );
+
+                                                            print("ajouté");
+                                                          }
+                                                        } else {
+                                                          CoolAlert.show(
+                                                            context: context,
+                                                            type: CoolAlertType
+                                                                .info,
+                                                            text:
+                                                                'Vous devez vous connecter pour accéder au panier',
+                                                            autoCloseDuration:
+                                                                const Duration(
+                                                                    seconds: 4),
+                                                          );
+                                                          print("se connecter");
+                                                        }
+                                                        //Get.to(CartScreen());
+                                                        //}
+                                                      },
+                                                      icon: Icon(
+                                                        Icons.shopping_cart,
+                                                        //UniconsLine.info_circle,
+                                                        color: Colors.white,
+                                                        size:
+                                                            size.width * 0.055,
+                                                      )),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                              /*buildProduct(
+                                counter,
+                                context,
+                                widget.isLoggedIn!,
+                                id_int!,
                                 product_name!,
                                 description!,
                                 cat!,
@@ -690,7 +1052,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                                 secondColor,
                                 color, //second color
                                 size, // device size
-                              );
+                              );*/
                             },
                           );
                         } else if (snapshot.hasError) {

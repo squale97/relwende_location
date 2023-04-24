@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_ecommerce_app/pages/cart/test_cart.dart';
 import 'package:flutter_ecommerce_app/pages/home_page.dart';
 import 'package:flutter_ecommerce_app/pages/splashscreen.dart';
 import 'package:flutter_ecommerce_app/pages/test_bar.dart';

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../constants.dart';
 import '../../../size_config.dart';
@@ -46,7 +45,7 @@ class CheckoutCard extends StatelessWidget {
                     color: Color(0xFFF5F6F9),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: SvgPicture.asset("assets/icons/receipt.svg"),
+                  child: Image.asset("assets/icons/logo_traite.png"),
                 ),
                 Spacer(),
                 Text("Add voucher code"),

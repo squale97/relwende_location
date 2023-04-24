@@ -1,5 +1,9 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ecommerce_app/account/login.dart';
+import 'package:flutter_ecommerce_app/appUrl.dart';
 import 'package:flutter_ecommerce_app/pages/cart/panier.dart';
 import 'package:flutter_ecommerce_app/pages/cart/shopping_cart.dart';
 import 'package:flutter_ecommerce_app/widgets/appbar.dart';
@@ -18,6 +22,8 @@ class DetailsPage extends StatefulWidget {
   final List colors;
   final String description;
   final String color;
+  final int productId;
+  final bool isLoggedIn;
   const DetailsPage(
       {Key? key,
       required this.description,
@@ -27,7 +33,9 @@ class DetailsPage extends StatefulWidget {
       required this.rating,
       required this.price,
       required this.colors,
-      required this.color})
+      required this.color,
+      required this.productId,
+      required this.isLoggedIn})
       : super(key: key);
 
   @override
@@ -106,7 +114,11 @@ class _DetailsPageState extends State<DetailsPage> {
                       );
                     },
                     errorBuilder: (context, error, stackTrace) {
-                      return SizedBox(
+                      return Image.asset(
+                        "assets/icons/logo_traite.png",
+                        width: size.width * 0.5,
+                        height: size.width * 0.5,
+                      ); /*SizedBox(
                         width: size.width * 0.5,
                         height: size.width * 0.5,
                         child: Align(
@@ -114,7 +126,7 @@ class _DetailsPageState extends State<DetailsPage> {
                             color: defaultColor,
                           ),
                         ),
-                      );
+                      );*/
                     },
                   ),
                   Row(
@@ -225,8 +237,65 @@ class _DetailsPageState extends State<DetailsPage> {
                               ),
                             ),
                             child: InkWell(
-                              onTap: () =>
-                                  print('purchase'), //TODO: add purchase action
+                              onTap: () async {
+                                String username = "54007038";
+                                String password = "2885351";
+                                print("clicked");
+                                String basicAuth = 'Basic ' +
+                                    base64Encode(
+                                        utf8.encode('$username:$password'));
+                                if (widget.isLoggedIn!) {
+                                  SharedPreferences prefs =
+                                      await SharedPreferences.getInstance();
+
+                                  //Return double
+                                  int ID = prefs.getInt('ID');
+
+                                  final response = await http.post(
+                                      Uri.parse(
+                                        AppUrl.url + 'cart/update',
+                                      ),
+                                      headers: <String, String>{
+                                        'authorization': basicAuth,
+                                        'Content-Type':
+                                            'application/json; charset=UTF-8'
+                                      },
+                                      body: jsonEncode({
+                                        "user": ID,
+                                        "product": widget.productId,
+                                      }));
+                                  if (response.statusCode == 200) {
+                                    setState(() {
+                                      //  counter = counter + 1;
+                                    });
+
+                                    // print(
+                                    // "le counter est " + counter.toString());
+                                    CoolAlert.show(
+                                      context: context,
+                                      type: CoolAlertType.success,
+                                      text: 'Produit ajouté avec succès',
+                                      autoCloseDuration:
+                                          const Duration(seconds: 4),
+                                    );
+
+                                    print("ajouté");
+                                  }
+                                } else {
+                                  CoolAlert.show(
+                                    context: context,
+                                    type: CoolAlertType.info,
+                                    text:
+                                        'Vous devez vous connecter pour accéder au panier',
+                                    autoCloseDuration:
+                                        const Duration(seconds: 4),
+                                  );
+                                  print("se connecter");
+                                }
+                                //Get.to(CartScreen());
+                                //}
+                              },
+                              //TODO: add purchase action
                               child: Icon(
                                 UniconsLine.shopping_cart_alt,
                                 color: secondColor,
@@ -238,7 +307,7 @@ class _DetailsPageState extends State<DetailsPage> {
                       ),
                     ],
                   ),
-                  SizedBox(
+                  /* SizedBox(
                     height: size.height * 0.02,
                     width: size.width * 0.3,
                     child: ListView.builder(
@@ -246,22 +315,24 @@ class _DetailsPageState extends State<DetailsPage> {
                       scrollDirection: Axis.horizontal,
                       shrinkWrap: true,
                       itemBuilder: (context, index) {
-                        if (index < widget.rating) {
-                          return Icon(
-                            Icons.star,
-                            color: defaultColor,
-                            size: size.height * 0.025,
-                          );
-                        } else {
+                        //  if (index < widget.rating) {
+                        return Icon(
+                          Icons.star,
+                          color: defaultColor,
+                          size: size.height * 0.025,
+                        );
+                        // }
+
+                        /* else {
                           return Icon(
                             Icons.star_outline,
                             color: defaultColor,
                             size: size.height * 0.025,
                           );
-                        }
+                        }*/
                       },
                     ),
-                  ),
+                  ),*/
                   Divider(
                     color: defaultColor,
                   ),
@@ -292,7 +363,9 @@ class _DetailsPageState extends State<DetailsPage> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => PanierPage()));
+                                builder: (context) => CartScreen(
+                                      isLoggedIn: widget.isLoggedIn,
+                                    )));
                       } else {
                         showDialog(
                             // barrierDismissible: false,
@@ -328,7 +401,7 @@ class _DetailsPageState extends State<DetailsPage> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(40)),
                     child: Text(
-                      "Ajouter au panier",
+                      "Accéder au panier",
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w600,

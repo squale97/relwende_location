@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ecommerce_app/pages/model/cartModel.dart';
-import 'package:flutter_svg/svg.dart';
 
 import '../../../size_config.dart';
 import 'cart_card.dart';
@@ -36,7 +35,7 @@ class _BodyState extends State<Body> {
               child: Row(
                 children: [
                   Spacer(),
-                  SvgPicture.asset("assets/icons/Trash.svg"),
+                  Image.asset("assets/icons/logo_traite.png"),
                 ],
               ),
             ),
