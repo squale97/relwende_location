@@ -143,6 +143,7 @@ class _CartScreenState extends State<CartScreen> {
 */
   @override
   void initState() {
+    fetchPanier();
     // TODO: implement initState
     super.initState();
     _panier = fetchPanier();
@@ -174,8 +175,8 @@ class _CartScreenState extends State<CartScreen> {
                           padding: EdgeInsets.symmetric(horizontal: 20),
                           child: ListView.builder(
                             itemCount:
-                                _products //snapshot.data!.contenu![0].produits!
-                                    .length, //demoCarts.length,
+                                7, // snapshot.data!.contenu![0].produits!
+                            //.length, //demoCarts.length,
                             itemBuilder: (context, index) {
                               bool value = false;
                               final product_title = snapshot
@@ -210,10 +211,7 @@ class _CartScreenState extends State<CartScreen> {
                                   child: Padding(
                                     padding: EdgeInsets.symmetric(vertical: 10),
                                     child: Dismissible(
-                                      key: Key(demoCarts[index]
-                                          .product
-                                          .id
-                                          .toString()),
+                                      key: Key(_products[index].id.toString()),
                                       direction: DismissDirection.endToStart,
                                       onDismissed: (direction) async {
                                         setState(() {

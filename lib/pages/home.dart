@@ -13,6 +13,7 @@ import 'package:flutter_ecommerce_app/pages/contact.dart';
 import 'package:flutter_ecommerce_app/pages/details_page.dart';
 import 'package:flutter_ecommerce_app/pages/model/categoryModel.dart';
 import 'package:flutter_ecommerce_app/pages/model/panierModel.dart';
+import 'package:flutter_ecommerce_app/pages/test_bar.dart';
 import 'package:get/get.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 
@@ -43,24 +44,14 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> with TickerProviderStateMixin {
   List categories = [];
   String searchValue = '';
-  final List<String> _suggestions = [
-    'Afeganistan',
-    'Albania',
-    'Algeria',
-    'Australia',
-    'Brazil',
-    'German',
-    'Madagascar',
-    'Mozambique',
-    'Portugal',
-    'Zambia'
-  ];
+
+  final List<ContenuS> _prodList = [];
   //late List<ContenuS> _filteredProducts;
   //late List<ContenuS> _searchProducts;
   //late TextEditingController _searchController;
   @override
   void dispose() {
-    // _searchController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -110,6 +101,16 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     }
   }
 
+  late List<ContenuS> _filteredProducts;
+  void _filterProducts(String query) {
+    setState(() {
+      _filteredProducts = _prodList
+          .where((product) =>
+              product.libele!.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    });
+  }
+
   Future<ProductByCategoryModel>? _products;
   Future<ProductByCategoryModel> fetchProducts() async {
     String username = '54007038';
@@ -129,15 +130,19 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     if (response.statusCode == 200) {
       setState(() {
         for (int i = 0;
-            i <=
+            i <
                 ProductByCategoryModel.fromJson(jsonDecode(response.body))
                     .contenu!
                     .length;
             i++) {
+          _prodList.add(
+              ProductByCategoryModel.fromJson(jsonDecode(response.body))
+                  .contenu![i]);
           /*_searchProducts.add(
               ProductByCategoryModel.fromJson(jsonDecode(response.body))
                   .contenu![i]);*/
         }
+        print(_prodList);
       });
 
       //print("ok");
@@ -263,6 +268,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   @override
   void initState() {
     // fetchPanier();
+    fetchProducts();
     if (widget.isLoggedIn!) {
       fetchPanier();
     }
@@ -275,6 +281,15 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     //fetchProducts();
     _tabController = TabController(length: 3, vsync: this);
   }
+
+  List<String> _filteredData = [];
+  final TextEditingController _searchController = TextEditingController();
+  /* @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+*/
 
   @override
   Widget build(BuildContext context) {
@@ -290,6 +305,20 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       key: _key,
       appBar: AppBar(
         actions: <Widget>[
+          IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ProductSearchPage(
+                              prods: _prodList,
+                              isLoggedIn: widget.isLoggedIn,
+                            )));
+              },
+              icon: Icon(
+                Icons.search,
+                color: Color(0xff3b22a1),
+              )),
           Padding(
             padding: EdgeInsets.only(
               right: size.width * 0.05,
@@ -390,7 +419,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                 ),
               ),
             ),
-          )
+          ),
         ],
         shadowColor: Colors.transparent,
         backgroundColor //: isDarkMode
@@ -556,8 +585,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                       builder: (BuildContext context) {
                         return AlertDialog(
                           title: Text("Alert"),
-                          content: Text(
-                              "Vous devez vous connecter pour accéder au panier"),
+                          content: Text("Vous devez vous connecter !"),
                           actions: <Widget>[
                             MaterialButton(
                                 onPressed: () {
@@ -662,7 +690,14 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                       prefs.setInt('ID', null);
                       setState(() {
                         widget.isLoggedIn = false;
+                        CoolAlert.show(
+                          context: context,
+                          type: CoolAlertType.info,
+                          text: 'Vous etes déconnecté',
+                          autoCloseDuration: const Duration(seconds: 2),
+                        );
                       });
+
                       Navigator.pop(context);
                       //Return String
                     },
@@ -705,7 +740,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
               padding: EdgeInsets.only(top: size.height * 0.02),
               child: ListView(
                 children: [
-                  Padding(
+                  /* Padding(
                     padding: EdgeInsets.all(16.0),
                     child: TextField(
                       //controller: _searchController,
@@ -715,7 +750,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                       ),
                       // onChanged: _filterProducts,
                     ),
-                  ),
+                  ),*/
                   ImageSlideshow(
                     /// Width of the [ImageSlideshow].
                     width: double.infinity,

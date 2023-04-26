@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ecommerce_app/appUrl.dart';
+import 'package:flutter_ecommerce_app/data/example_data.dart';
+import 'package:flutter_ecommerce_app/pages/details_page.dart';
+import 'package:get/get.dart';
+
+import 'model/productbyCatModel.dart';
 
 class Product {
   final String name;
@@ -23,18 +29,21 @@ final List<Product> products = [
 ];
 
 class ProductSearchPage extends StatefulWidget {
+  List<ContenuS>? prods;
+  bool? isLoggedIn;
+  ProductSearchPage({this.prods, this.isLoggedIn});
   @override
   _ProductSearchPageState createState() => _ProductSearchPageState();
 }
 
 class _ProductSearchPageState extends State<ProductSearchPage> {
-  late List<Product> _filteredProducts;
+  late List<ContenuS> _filteredProducts;
   late TextEditingController _searchController;
 
   @override
   void initState() {
     super.initState();
-    _filteredProducts = products;
+    _filteredProducts = widget.prods!;
     _searchController = TextEditingController();
   }
 
@@ -46,9 +55,9 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
 
   void _filterProducts(String query) {
     setState(() {
-      _filteredProducts = products
+      _filteredProducts = widget.prods!
           .where((product) =>
-              product.name.toLowerCase().contains(query.toLowerCase()))
+              product.libele!.toLowerCase().contains(query.toLowerCase()))
           .toList();
     });
   }
@@ -57,7 +66,8 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Product Search'),
+        backgroundColor: Color(0xff3b22a1),
+        title: Text('Trouver un produit'),
       ),
       body: Column(
         children: [
@@ -77,8 +87,24 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
               itemCount: _filteredProducts.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text(_filteredProducts[index].name),
-                  subtitle: Text(_filteredProducts[index].description),
+                  onTap: () => Get.to(
+                    () => DetailsPage(
+                      description: _filteredProducts[index].description!,
+                      name: _filteredProducts[index].libele!,
+                      room: _filteredProducts[index].libeleCategorie!,
+                      assetURL: AppUrl.url +
+                          'produitImages/' +
+                          _filteredProducts[index].id.toString(),
+                      rating: 5,
+                      price: _filteredProducts[index].prix!.toDouble(),
+                      color: _filteredProducts[index].color!,
+                      colors: items[0]['colors'],
+                      productId: _filteredProducts[index].id!,
+                      isLoggedIn: widget.isLoggedIn!,
+                    ),
+                  ), //{Navigator.push(context, MaterialPageRoute(builder: (builder)))},
+                  title: Text(_filteredProducts[index].libele!),
+                  subtitle: Text(_filteredProducts[index].libeleCategorie!),
                 );
               },
             ),

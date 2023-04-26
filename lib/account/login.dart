@@ -539,7 +539,7 @@ class _LoginPageState extends State<LoginPage> {
                                   height: 20,
                                 ),
                                 Text(
-                                  "Relwende.infos@gmail.com",
+                                  "contact@relwende.com",
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black,

@@ -12,6 +12,8 @@ import 'appUrl.dart';
 
 class InfoUserPage extends StatefulWidget {
   //const InfoUserPage({super.key});
+  bool? isLoggedIn;
+  InfoUserPage({this.isLoggedIn});
 
   @override
   State<InfoUserPage> createState() => _InfoUserPageState();
@@ -70,127 +72,129 @@ class _InfoUserPageState extends State<InfoUserPage> {
   String? email = '';
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      bottomSheet: Container(
-          //alignment: Alignment.bottomCenter,
-          margin: EdgeInsets.only(left: MediaQuery.of(context).size.width / 4),
-          child: Text("RelwendeLocations ® 2023")),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 50.0),
-            decoration: BoxDecoration(
-              color: Color(0xff3b22a1),
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(30.0),
-                bottomRight: Radius.circular(30.0),
+    if (widget.isLoggedIn == true) {
+      return Scaffold(
+        bottomSheet: Container(
+            //alignment: Alignment.bottomCenter,
+            margin:
+                EdgeInsets.only(left: MediaQuery.of(context).size.width / 4),
+            child: Text("RelwendeLocations ® 2023")),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 50.0),
+              decoration: BoxDecoration(
+                color: Color(0xff3b22a1),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(30.0),
+                  bottomRight: Radius.circular(30.0),
+                ),
               ),
-            ),
-            child: Center(
-              child: Column(
-                children: <Widget>[
-                  CircleAvatar(
-                    backgroundImage: AssetImage(
-                        "assets/icons/logo_traite.png"), //AssetImage(profileImage!),
-                    radius: 50.0,
-                  ),
-                  SizedBox(height: 10.0),
-                  Text(
-                    name! + " " + bio!,
-                    style: TextStyle(
-                      fontSize: 22.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+              child: Center(
+                child: Column(
+                  children: <Widget>[
+                    CircleAvatar(
+                      backgroundImage: AssetImage(
+                          "assets/icons/logo_traite.png"), //AssetImage(profileImage!),
+                      radius: 50.0,
                     ),
-                  ),
-                ],
+                    SizedBox(height: 10.0),
+                    Text(
+                      name! + " " + bio!,
+                      style: TextStyle(
+                        fontSize: 22.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          SizedBox(height: 20.0),
-          /*Padding(
+            SizedBox(height: 20.0),
+            /*Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.0),
             child: Text(
               bio!,
               style: TextStyle(fontSize: 16.0),
             ),
           ),*/
-          SizedBox(height: 20.0),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.0),
-            child: Text(
-              'Informations',
-              style: TextStyle(
-                fontSize: 22.0,
-                fontWeight: FontWeight.bold,
+            SizedBox(height: 20.0),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.0),
+              child: Text(
+                'Informations',
+                style: TextStyle(
+                  fontSize: 22.0,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-          ),
-          SizedBox(height: 20.0),
-          Expanded(
-              child: Card(
-            //color: Colors.grey[300],
-            child: ListView(
-              children: [
-                ListTile(
-                  leading: Icon(Icons.phone),
-                  title: Text(tel!),
-                ),
-                ListTile(
-                  leading: Icon(Icons.email),
-                  title: Text(email!),
-                ),
-                ListTile(
-                  leading: Icon(Icons.person),
-                  title: Text(name!),
-                ),
-                ListTile(
-                  leading: Icon(Icons.person),
-                  title: Text(bio!),
-                ),
-                SizedBox(
-                  height: 50,
-                ),
-                FadeAnimation(
-                    1.7,
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 20),
-                      child: InkWell(
-                        onTap: () async {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => UpdateUserPage(
-                                        nom: name,
-                                        prenom: bio,
-                                        email: email,
-                                        num: tel,
-                                      )));
-                        },
-                        child: Container(
-                          height: 50,
-                          width: 150,
-                          decoration: BoxDecoration(
-                              color: Colors.black,
-                              borderRadius: BorderRadius.circular(50)),
-                          child: Center(
-                            child: Text(
-                              "Modifier",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
+            SizedBox(height: 20.0),
+            Expanded(
+                child: Card(
+              //color: Colors.grey[300],
+              child: ListView(
+                children: [
+                  ListTile(
+                    leading: Icon(Icons.phone),
+                    title: Text(tel!),
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.email),
+                    title: Text(email!),
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.person),
+                    title: Text(name!),
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.person),
+                    title: Text(bio!),
+                  ),
+                  SizedBox(
+                    height: 50,
+                  ),
+                  FadeAnimation(
+                      1.7,
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        child: InkWell(
+                          onTap: () async {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => UpdateUserPage(
+                                          nom: name,
+                                          prenom: bio,
+                                          email: email,
+                                          num: tel,
+                                        )));
+                          },
+                          child: Container(
+                            height: 50,
+                            width: 150,
+                            decoration: BoxDecoration(
+                                color: Colors.black,
+                                borderRadius: BorderRadius.circular(50)),
+                            child: Center(
+                              child: Text(
+                                "Modifier",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    )),
-                SizedBox(
-                  height: 20,
-                ),
-              ],
-            ),
-          ) /* ListView.builder(
+                      )),
+                  SizedBox(
+                    height: 20,
+                  ),
+                ],
+              ),
+            ) /* ListView.builder(
               itemCount: 10,
               itemBuilder: (BuildContext context, int index) {
                 return Padding(
@@ -207,9 +211,16 @@ class _InfoUserPageState extends State<InfoUserPage> {
                 );
               },
             ),*/
-              ),
-        ],
-      ),
-    );
+                ),
+          ],
+        ),
+      );
+    } else {
+      return Scaffold(
+        body: Center(
+          child: Text("Veuillez vous connecter"),
+        ),
+      );
+    }
   }
 }

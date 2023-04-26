@@ -81,7 +81,7 @@ class ContactPage extends StatelessWidget {
                     Icon(Icons.email),
                     SizedBox(width: 8.0),
                     Text(
-                      'support@example.com',
+                      'contact@relwende.com',
                       style: TextStyle(
                         fontSize: 16.0,
                       ),
@@ -158,7 +158,8 @@ class ContactPage extends StatelessWidget {
                   ),
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      String email = Uri.encodeComponent("relwende@gmail.com");
+                      String email =
+                          Uri.encodeComponent("contact@relwende.com");
                       String subject = Uri.encodeComponent(Subject.text);
                       String body = Uri.encodeComponent(corps.text);
                       print(subject); //output: Hello%20Flutter

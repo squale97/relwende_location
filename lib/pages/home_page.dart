@@ -56,7 +56,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       CartScreen(
         isLoggedIn: isloggedin,
       ),
-      InfoUserPage()
+      InfoUserPage(
+        isLoggedIn: isloggedin,
+      )
     ];
     Size size = MediaQuery.of(context).size; //check the size of device
     var brightness = MediaQuery.of(context).platformBrightness;
