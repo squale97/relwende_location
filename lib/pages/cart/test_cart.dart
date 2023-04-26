@@ -1,95 +1,94 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter/src/widgets/placeholder.dart';
 
-class Product {
-  String name;
-  String image;
-  int quantity;
+class ProfileT extends StatefulWidget {
+  //const ProfileT({super.key});
 
-  Product({required this.name, required this.image, this.quantity = 0});
-}
-
-class CartPage extends StatefulWidget {
   @override
-  _CartPageState createState() => _CartPageState();
+  State<ProfileT> createState() => _ProfileTState();
 }
 
-class _CartPageState extends State<CartPage> {
-  List<Product> _products = [
-    Product(name: 'Product 1', image: 'image1.jpg'),
-    Product(name: 'Product 2', image: 'image2.jpg'),
-    Product(name: 'Product 3', image: 'image3.jpg'),
-    Product(name: 'Product 4', image: 'image4.jpg'),
-    Product(name: 'Product 5', image: 'image5.jpg'),
-  ];
-
+class _ProfileTState extends State<ProfileT> {
+  String name = 'John Doe';
+  String bio =
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas fermentum rhoncus libero, a faucibus sapien.';
+  String profileImage = 'assets/icons/logo_tratie.png';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Panier'),
-      ),
-      body: FutureBuilder<List<Product>>(
-        future: Future.delayed(Duration(seconds: 2), () => _products),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Erreur de chargement des données'));
-          } else if (snapshot.hasData) {
-            return ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                Product product = snapshot.data![index];
-                return ListTile(
-                  leading: Image.asset(product.image),
-                  title: Text(product.name),
-                  subtitle: Text('Quantité: ${product.quantity}'),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.remove),
-                        onPressed: () {
-                          setState(() {
-                            if (product.quantity > 0) {
-                              product.quantity--;
-                            }
-                          });
-                        },
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 50.0),
+            decoration: BoxDecoration(
+              color: Colors.blue,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(30.0),
+                bottomRight: Radius.circular(30.0),
+              ),
+            ),
+            child: Center(
+              child: Column(
+                children: <Widget>[
+                  CircleAvatar(
+                    backgroundImage: AssetImage(profileImage),
+                    radius: 50.0,
+                  ),
+                  SizedBox(height: 10.0),
+                  Text(
+                    name,
+                    style: TextStyle(
+                      fontSize: 22.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(height: 20.0),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.0),
+            child: Text(
+              bio,
+              style: TextStyle(fontSize: 16.0),
+            ),
+          ),
+          SizedBox(height: 20.0),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.0),
+            child: Text(
+              'Posts',
+              style: TextStyle(
+                fontSize: 22.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          SizedBox(height: 20.0),
+          Expanded(
+            child: ListView.builder(
+              itemCount: 10,
+              itemBuilder: (BuildContext context, int index) {
+                return Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Card(
+                    child: Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Text(
+                        'Post $index',
+                        style: TextStyle(fontSize: 18.0),
                       ),
-                      SizedBox(width: 10),
-                      Text('${product.quantity}'),
-                      SizedBox(width: 10),
-                      IconButton(
-                        icon: Icon(Icons.add),
-                        onPressed: () {
-                          setState(() {
-                            product.quantity++;
-                          });
-                        },
-                      ),
-                      SizedBox(width: 10),
-                      Checkbox(
-                        value: product.quantity > 0,
-                        onChanged: (bool? checked) {
-                          setState(() {
-                            if (checked!) {
-                              product.quantity = 1;
-                            } else {
-                              product.quantity = 0;
-                            }
-                          });
-                        },
-                      ),
-                    ],
+                    ),
                   ),
                 );
               },
-            );
-          } else {
-            return Center(child: Text('Aucun produit trouvé'));
-          }
-        },
+            ),
+          ),
+        ],
       ),
     );
   }

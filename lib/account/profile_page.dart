@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:flutter_ecommerce_app/info_user.dart';
 import 'package:flutter_ecommerce_app/size_config.dart';
+import 'package:get/route_manager.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -53,6 +55,12 @@ class _ProfilePageState extends State<ProfilePage> {
                   onTap: () {},
                   child: Card(
                       child: ListTile(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => InfoUserPage()));
+                          },
                           trailing: Icon(Icons.arrow_circle_right),
                           leading: Icon(Icons.edit),
                           title: Text(

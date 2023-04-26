@@ -80,79 +80,81 @@ class _ProductCategoriePageState extends State<ProductCategoriePage> {
           future: fetchProductsByCat(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 0.65,
-                ),
-                itemCount: snapshot.data!.contenu!.length,
-                shrinkWrap: true,
-                primary: false,
-                // physics: const NeverScrollableScrollPhysics(),
-                padding: EdgeInsets.zero,
-                itemBuilder: (context, index) {
-                  final product_name = snapshot.data!.contenu![index].libele;
-                  final description =
-                      snapshot.data!.contenu![index].description;
-                  final id = snapshot.data!.contenu![index].id.toString();
-                  final id_int = snapshot.data!.contenu![index].id;
-                  final cat = snapshot.data!.contenu![index].libeleCategorie;
-                  final price = snapshot.data!.contenu![index].prix!.toDouble();
-                  final color = snapshot.data!.contenu![index].color!;
-                  print("le id de l'image est :" + id!);
-                  return Center(
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: size.width * 0.04,
-                        ),
-                        child: InkWell(
-                          onTap: () => Get.to(
-                            () => DetailsPage(
-                              description: description!,
-                              name: product_name!,
-                              room: cat!,
-                              assetURL: AppUrl.url + 'produitImages/' + id!,
-                              rating: 5,
-                              price: price,
-                              color: color,
-                              colors: items[index]['colors'],
-                              productId: id_int!,
-                              isLoggedIn: widget.isLoggedIn!,
-                            ),
+              if (snapshot.data!.contenu!.isNotEmpty) {
+                return GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 0.65,
+                  ),
+                  itemCount: snapshot.data!.contenu!.length,
+                  shrinkWrap: true,
+                  primary: false,
+                  // physics: const NeverScrollableScrollPhysics(),
+                  padding: EdgeInsets.zero,
+                  itemBuilder: (context, index) {
+                    final product_name = snapshot.data!.contenu![index].libele;
+                    final description =
+                        snapshot.data!.contenu![index].description;
+                    final id = snapshot.data!.contenu![index].id.toString();
+                    final id_int = snapshot.data!.contenu![index].id;
+                    final cat = snapshot.data!.contenu![index].libeleCategorie;
+                    final price =
+                        snapshot.data!.contenu![index].prix!.toDouble();
+                    final color = snapshot.data!.contenu![index].color!;
+                    print("le id de l'image est :" + id!);
+                    return Center(
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: size.width * 0.04,
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Image.network(
-                                AppUrl.url + 'produitImages/' + id!,
-                                height: size.width * 0.5,
-                                width: size.width * 0.5,
-                                fit: BoxFit.contain,
-                                loadingBuilder:
-                                    (context, child, loadingProgress) {
-                                  if (loadingProgress == null) {
-                                    return child;
-                                  }
-                                  return SizedBox(
-                                    width: size.width * 0.5,
-                                    height: size.width * 0.5,
-                                    child: Align(
-                                      child: CircularProgressIndicator(
-                                        color: defaultColor,
-                                      ),
-                                    ),
-                                  );
-                                },
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Image.asset(
-                                      "assets/icons/logo_traite.png",
-                                      height: size.width * 0.5,
+                          child: InkWell(
+                            onTap: () => Get.to(
+                              () => DetailsPage(
+                                description: description!,
+                                name: product_name!,
+                                room: cat!,
+                                assetURL: AppUrl.url + 'produitImages/' + id!,
+                                rating: 5,
+                                price: price,
+                                color: color,
+                                colors: items[0]['colors'],
+                                productId: id_int!,
+                                isLoggedIn: widget.isLoggedIn!,
+                              ),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Image.network(
+                                  AppUrl.url + 'produitImages/' + id!,
+                                  height: size.width * 0.5,
+                                  width: size.width * 0.5,
+                                  fit: BoxFit.contain,
+                                  loadingBuilder:
+                                      (context, child, loadingProgress) {
+                                    if (loadingProgress == null) {
+                                      return child;
+                                    }
+                                    return SizedBox(
                                       width: size.width * 0.5,
-                                      fit: BoxFit
-                                          .contain); /*SizedBox(
+                                      height: size.width * 0.5,
+                                      child: Align(
+                                        child: CircularProgressIndicator(
+                                          color: defaultColor,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Image.asset(
+                                        "assets/icons/logo_traite.png",
+                                        height: size.width * 0.5,
+                                        width: size.width * 0.5,
+                                        fit: BoxFit
+                                            .contain); /*SizedBox(
                                     width: size.width * 0.5,
                                     height: size.width * 0.5,
                                     child: Align(
@@ -161,158 +163,167 @@ class _ProductCategoriePageState extends State<ProductCategoriePage> {
                                       ),
                                     ),
                                   );*/
-                                },
-                              ),
-                              Text(
-                                cat!,
-                                style: GoogleFonts.poppins(
-                                  color: defaultColor,
-                                  fontSize: size.height * 0.016,
-                                ),
-                              ),
-                              SizedBox(
-                                width: size.width * 0.5,
-                                child: Text(
-                                  product_name!,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: GoogleFonts.lato(
-                                    color: defaultColor,
-                                    fontSize: size.height * 0.02,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: size.height * 0.02,
-                                width: size.width * 0.3,
-                                child: ListView.builder(
-                                  itemCount: 5,
-                                  scrollDirection: Axis.horizontal,
-                                  shrinkWrap: true,
-                                  itemBuilder: (context, index) {
-                                    if (index < 5) {
-                                      return Icon(
-                                        Icons.star,
-                                        color: defaultColor,
-                                        size: size.height * 0.025,
-                                      );
-                                    } else {
-                                      return Icon(
-                                        Icons.star_outline,
-                                        color: defaultColor,
-                                        size: size.height * 0.025,
-                                      );
-                                    }
                                   },
                                 ),
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    '$price\$',
-                                    style: GoogleFonts.poppins(
+                                Text(
+                                  cat!,
+                                  style: GoogleFonts.poppins(
+                                    color: defaultColor,
+                                    fontSize: size.height * 0.016,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: size.width * 0.5,
+                                  child: Text(
+                                    product_name!,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.lato(
                                       color: defaultColor,
                                       fontSize: size.height * 0.02,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  SizedBox(
-                                    height: size.width * 0.1,
-                                    width: size.width * 0.1,
-                                    child: Container(
-                                      decoration: BoxDecoration(
+                                ),
+                                SizedBox(
+                                  height: size.height * 0.02,
+                                  width: size.width * 0.3,
+                                  child: ListView.builder(
+                                    itemCount: 5,
+                                    scrollDirection: Axis.horizontal,
+                                    shrinkWrap: true,
+                                    itemBuilder: (context, index) {
+                                      if (index < 5) {
+                                        return Icon(
+                                          Icons.star,
+                                          color: defaultColor,
+                                          size: size.height * 0.025,
+                                        );
+                                      } else {
+                                        return Icon(
+                                          Icons.star_outline,
+                                          color: defaultColor,
+                                          size: size.height * 0.025,
+                                        );
+                                      }
+                                    },
+                                  ),
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      '$price\$',
+                                      style: GoogleFonts.poppins(
                                         color: defaultColor,
-                                        borderRadius: const BorderRadius.all(
-                                          Radius.circular(
-                                            10,
+                                        fontSize: size.height * 0.02,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: size.width * 0.1,
+                                      width: size.width * 0.1,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: defaultColor,
+                                          borderRadius: const BorderRadius.all(
+                                            Radius.circular(
+                                              10,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      child: IconButton(
-                                          onPressed: () async {
-                                            String username = "54007038";
-                                            String password = "2885351";
-                                            print("clicked");
-                                            String basicAuth = 'Basic ' +
-                                                base64Encode(utf8.encode(
-                                                    '$username:$password'));
-                                            if (widget.isLoggedIn!) {
-                                              SharedPreferences prefs =
-                                                  await SharedPreferences
-                                                      .getInstance();
+                                        child: IconButton(
+                                            onPressed: () async {
+                                              String username = "54007038";
+                                              String password = "2885351";
+                                              print("clicked");
+                                              String basicAuth = 'Basic ' +
+                                                  base64Encode(utf8.encode(
+                                                      '$username:$password'));
+                                              if (widget.isLoggedIn!) {
+                                                SharedPreferences prefs =
+                                                    await SharedPreferences
+                                                        .getInstance();
 
-                                              //Return double
-                                              int ID = prefs.getInt('ID');
+                                                //Return double
+                                                int ID = prefs.getInt('ID');
 
-                                              final response = await http.post(
-                                                  Uri.parse(
-                                                    AppUrl.url + 'cart/update',
-                                                  ),
-                                                  headers: <String, String>{
-                                                    'authorization': basicAuth,
-                                                    'Content-Type':
-                                                        'application/json; charset=UTF-8'
-                                                  },
-                                                  body: jsonEncode({
-                                                    "user": ID,
-                                                    "product": id_int,
-                                                  }));
-                                              if (response.statusCode == 200) {
-                                                setState(() {
-                                                  //counter =
-                                                  //counter + 1;
-                                                });
+                                                final response =
+                                                    await http.post(
+                                                        Uri.parse(
+                                                          AppUrl.url +
+                                                              'cart/update',
+                                                        ),
+                                                        headers: <String,
+                                                            String>{
+                                                          'authorization':
+                                                              basicAuth,
+                                                          'Content-Type':
+                                                              'application/json; charset=UTF-8'
+                                                        },
+                                                        body: jsonEncode({
+                                                          "user": ID,
+                                                          "product": id_int,
+                                                        }));
+                                                if (response.statusCode ==
+                                                    200) {
+                                                  setState(() {
+                                                    //counter =
+                                                    //counter + 1;
+                                                  });
 
-                                                //print("le counter est " +
-                                                // counter
-                                                //.toString());
+                                                  //print("le counter est " +
+                                                  // counter
+                                                  //.toString());
+                                                  CoolAlert.show(
+                                                    context: context,
+                                                    type: CoolAlertType.success,
+                                                    text:
+                                                        'Produit ajouté avec succès',
+                                                    autoCloseDuration:
+                                                        const Duration(
+                                                            seconds: 4),
+                                                  );
+
+                                                  print("ajouté");
+                                                }
+                                              } else {
                                                 CoolAlert.show(
                                                   context: context,
-                                                  type: CoolAlertType.success,
+                                                  type: CoolAlertType.info,
                                                   text:
-                                                      'Produit ajouté avec succès',
+                                                      'Vous devez vous connecter pour accéder au panier',
                                                   autoCloseDuration:
                                                       const Duration(
                                                           seconds: 4),
                                                 );
-
-                                                print("ajouté");
+                                                print("se connecter");
                                               }
-                                            } else {
-                                              CoolAlert.show(
-                                                context: context,
-                                                type: CoolAlertType.info,
-                                                text:
-                                                    'Vous devez vous connecter pour accéder au panier',
-                                                autoCloseDuration:
-                                                    const Duration(seconds: 4),
-                                              );
-                                              print("se connecter");
-                                            }
-                                            //Get.to(CartScreen());
-                                            //}
-                                          },
-                                          icon: Icon(
-                                            Icons.shopping_cart,
-                                            //UniconsLine.info_circle,
-                                            color: Colors.white,
-                                            size: size.width * 0.055,
-                                          )),
+                                              //Get.to(CartScreen());
+                                              //}
+                                            },
+                                            icon: Icon(
+                                              Icons.shopping_cart,
+                                              //UniconsLine.info_circle,
+                                              color: Colors.white,
+                                              size: size.width * 0.055,
+                                            )),
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  );
-                },
-              );
+                    );
+                  },
+                );
+              } else {
+                return Center(child: Text('vide'));
+              }
             } else if (snapshot.hasError) {
               return Text("${snapshot.error}");
             }

@@ -1,4 +1,5 @@
 # This is a generated file; do not edit or check into version control.
+flutter_email_sender=/home/kabore/.pub-cache/hosted/pub.dev/flutter_email_sender-5.2.0/
 path_provider=/home/kabore/.pub-cache/hosted/pub.dev/path_provider-2.0.14/
 path_provider_android=/home/kabore/.pub-cache/hosted/pub.dev/path_provider_android-2.0.24/
 path_provider_foundation=/home/kabore/.pub-cache/hosted/pub.dev/path_provider_foundation-2.2.0/
@@ -7,3 +8,10 @@ path_provider_windows=/home/kabore/.pub-cache/hosted/pub.dev/path_provider_windo
 shared_preferences=/home/kabore/.pub-cache/hosted/pub.dev/shared_preferences-0.5.7+3/
 shared_preferences_macos=/home/kabore/.pub-cache/hosted/pub.dev/shared_preferences_macos-0.0.1+11/
 shared_preferences_web=/home/kabore/.pub-cache/hosted/pub.dev/shared_preferences_web-0.1.2+7/
+url_launcher=/home/kabore/.pub-cache/hosted/pub.dev/url_launcher-6.1.10/
+url_launcher_android=/home/kabore/.pub-cache/hosted/pub.dev/url_launcher_android-6.0.27/
+url_launcher_ios=/home/kabore/.pub-cache/hosted/pub.dev/url_launcher_ios-6.1.4/
+url_launcher_linux=/home/kabore/.pub-cache/hosted/pub.dev/url_launcher_linux-3.0.4/
+url_launcher_macos=/home/kabore/.pub-cache/hosted/pub.dev/url_launcher_macos-3.0.5/
+url_launcher_web=/home/kabore/.pub-cache/hosted/pub.dev/url_launcher_web-2.0.16/
+url_launcher_windows=/home/kabore/.pub-cache/hosted/pub.dev/url_launcher_windows-3.0.5/

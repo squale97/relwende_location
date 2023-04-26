@@ -27,6 +27,13 @@ class _LoginPageState extends State<LoginPage> {
   bool isLoggedIn = false;
   String number = '';
   int? ID;
+  bool _isObscure = true;
+
+  void _toggleObscure() {
+    setState(() {
+      _isObscure = !_isObscure;
+    });
+  }
 
   Future<Null> loginUser(int? id) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -238,10 +245,7 @@ class _LoginPageState extends State<LoginPage> {
                                       FilteringTextInputFormatter.deny(
                                           RegExp('[ ]'))
                                     ],
-                                    style: TextStyle(
-                                        color: isDarkMode
-                                            ? Colors.white
-                                            : Colors.black),
+                                    style: TextStyle(color: Colors.black),
                                     controller: _nameEditingController,
                                     decoration: InputDecoration(
                                         /* icon: Icon(Icons.phone,
@@ -287,14 +291,24 @@ class _LoginPageState extends State<LoginPage> {
                                       bottom: 0),
                                   //padding: EdgeInsets.symmetric(horizontal: 15),
                                   child: TextFormField(
+                                    obscureText: _isObscure,
                                     inputFormatters: [
                                       FilteringTextInputFormatter.deny(
                                           RegExp('[ ]'))
                                     ],
                                     style: TextStyle(color: Colors.black),
                                     controller: _urlEditingController,
-                                    obscureText: true,
+                                    // obscureText: true,
                                     decoration: InputDecoration(
+                                        suffixIcon: IconButton(
+                                          icon: Icon(
+                                            color: Color(0xff3b22a1),
+                                            _isObscure
+                                                ? Icons.visibility_off
+                                                : Icons.visibility,
+                                          ),
+                                          onPressed: _toggleObscure,
+                                        ),
                                         // focusColor: Colors.orange,
                                         enabledBorder: OutlineInputBorder(
                                           borderRadius:
@@ -484,9 +498,7 @@ class _LoginPageState extends State<LoginPage> {
                                               child: Text(
                                                 "Créér un compte",
                                                 style: TextStyle(
-                                                    color: isDarkMode
-                                                        ? Colors.white
-                                                        : Colors.black,
+                                                    color: Colors.black,
                                                     fontWeight:
                                                         FontWeight.bold),
                                               ),
@@ -498,9 +510,7 @@ class _LoginPageState extends State<LoginPage> {
                                     onPressed: () {},
                                     child: Text("Mot de passe oublié?",
                                         style: TextStyle(
-                                            color: isDarkMode
-                                                ? Colors.white
-                                                : Colors.black,
+                                            color: Colors.black,
                                             fontWeight: FontWeight.bold)),
                                   ),
                                 ),
@@ -532,9 +542,7 @@ class _LoginPageState extends State<LoginPage> {
                                   "Relwende.infos@gmail.com",
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    color: isDarkMode
-                                        ? Colors.white
-                                        : Colors.black,
+                                    color: Colors.black,
                                   ),
                                 ),
                                 SizedBox(
@@ -544,9 +552,7 @@ class _LoginPageState extends State<LoginPage> {
                                   "RelwendeLocations ® 2023",
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    color: isDarkMode
-                                        ? Colors.white
-                                        : Colors.black,
+                                    color: Colors.black,
                                   ),
                                 ),
                                 SizedBox(

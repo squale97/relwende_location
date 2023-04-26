@@ -105,6 +105,7 @@ class Produits {
   int? prix;
   String? reference;
   int? stock;
+  int? index;
 
   Produits(
       {this.description,
@@ -115,6 +116,7 @@ class Produits {
       this.libeleCategorie,
       this.prix,
       this.reference,
+      this.index,
       this.stock});
 
   Produits.fromJson(Map<String, dynamic> json) {
@@ -127,6 +129,7 @@ class Produits {
     prix = json['prix'];
     reference = json['reference'];
     stock = json['stock'];
+    index = json['index'];
   }
 
   Map<String, dynamic> toJson() {
@@ -140,6 +143,7 @@ class Produits {
     data['prix'] = this.prix;
     data['reference'] = this.reference;
     data['stock'] = this.stock;
+    data['index'] = this.index;
     return data;
   }
 }

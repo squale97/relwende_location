@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_ecommerce_app/pages/commande_detail.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_ecommerce_app/appUrl.dart';
@@ -80,11 +81,20 @@ class _OrderPageState extends State<OrderPage> {
                         backgroundColor: Color(0xff3b22a1),
                         child: Text((index + 1).toString()),
                       ),
-                      title: Text('Commande ' + (index + 1).toString()),
-                      subtitle: Text('Total: \ 20'),
+                      title: Text(
+                          'commande ' + snapshot.data!.contenu![index].libele!),
+                      subtitle: Text(
+                          'statut: ' + snapshot.data!.contenu![index].statut!),
                       trailing:
                           Text(snapshot.data!.contenu![index].dateEvenement!),
                       onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CommmandeDetailPage(
+                                      products: snapshot
+                                          .data!.contenu![index].produits,
+                                    )));
                         // TODO: Navigate to order detail page
                       },
                     );

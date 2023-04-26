@@ -8,15 +8,20 @@ import 'package:flutter_ecommerce_app/account/login.dart';
 import 'package:flutter_ecommerce_app/appUrl.dart';
 import 'package:flutter_ecommerce_app/pages/home_page.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({Key? key}) : super(key: key);
+class UpdateUserPage extends StatefulWidget {
+  String? nom;
+  String? prenom;
+  String? email;
+  String? num;
+  UpdateUserPage({this.nom, this.prenom, this.email, this.num});
 
   @override
-  _RegisterPageState createState() => _RegisterPageState();
+  _UpdateUserPageState createState() => _UpdateUserPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _UpdateUserPageState extends State<UpdateUserPage> {
   bool _isObscure = true;
 
   void _toggleObscure() {
@@ -43,7 +48,7 @@ class _RegisterPageState extends State<RegisterPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Color(0xff3b22a1),
-        title: Text("Création de compte"),
+        title: Text("Modifier mes informations"),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -94,7 +99,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 labelStyle: TextStyle(
                                   color: Colors.black,
                                 ),
-                                hintText: 'nom'),
+                                hintText: widget.nom),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return "Veuillez entrer le nom utilisateur";
@@ -135,6 +140,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               ),
                               labelText: "Prénom",
                               labelStyle: TextStyle(color: Colors.black),
+                              hintText: widget.prenom!,
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -173,7 +179,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               ),
                               labelText: 'adresse email (optionnel)',
                               labelStyle: TextStyle(color: Colors.black),
-                              hintText: 'Optionnel'),
+                              hintText: widget.email!),
 
                           /* validator: (value) {
                                  if (value == null || value.isEmpty) {
@@ -210,7 +216,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               ),
                               labelText: 'numéro de téléphone',
                               labelStyle: TextStyle(color: Colors.black),
-                              hintText: 'numéro de téléphone'),
+                              hintText: widget.num),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return "Veuillez entrer votre prénom";
@@ -222,7 +228,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       const SizedBox(
                         height: 20,
                       ),
-                      Padding(
+                      /*Padding(
                         padding: const EdgeInsets.only(
                             left: 15.0, right: 15.0, top: 15, bottom: 0),
                         //padding: EdgeInsets.symmetric(horizontal: 15),
@@ -312,7 +318,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             return null;
                           },
                         ),
-                      ),
+                      ),*/
                       const SizedBox(
                         height: 20,
                       ),
@@ -348,6 +354,11 @@ class _RegisterPageState extends State<RegisterPage> {
                         //height:60,
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+
+                            //Return double
+                            int ID = prefs.getInt('ID');
                             String username = "54007038";
                             String password = "2885351";
                             print("clicked");
@@ -358,20 +369,21 @@ class _RegisterPageState extends State<RegisterPage> {
                             // if (_passwordEditingController.text!=_confirmPasswordEditingController.text){_formKey.currentState!.deactivate();}
                             final response = await http.post(
                                 Uri.parse(
-                                  AppUrl.url + 'userRegister',
+                                  AppUrl.url + 'update/user',
                                 ),
                                 headers: <String, String>{
                                   HttpHeaders.authorizationHeader: basicAuth,
                                   'Content-Type':
                                       'application/json; charset=UTF-8'
                                 },
-                                body: jsonEncode(<String, String>{
+                                body: jsonEncode({
+                                  "id": ID,
                                   "nom": _nameEditingController.text,
                                   "prenom": _prenomEditingController.text,
                                   "email": _emailEditingController.text,
                                   "contact": _numTelEditingController.text,
                                   // "num_cnib": _numEditingController.text,
-                                  "password": _passwordEditingController.text,
+                                  // "password": _passwordEditingController.text,
                                   // "code_pin": _codePinEditingController.text,
                                 }));
                             print(response.statusCode);
@@ -379,8 +391,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               CoolAlert.show(
                                 context: context,
                                 type: CoolAlertType.success,
-                                text:
-                                    'Votre compte a été créé: veuillez vous connecter!',
+                                text: 'Vos informations ont été modifier',
                                 autoCloseDuration: const Duration(seconds: 4),
                               );
                               /*Navigator.pushReplacement(
@@ -399,7 +410,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(40)),
                         child: Text(
-                          "S'inscrire",
+                          "Valider",
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
@@ -410,7 +421,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       SizedBox(
                         height: 20,
                       ),
-                      Row(
+                      /* Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
@@ -434,7 +445,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             SizedBox(
                               height: 20,
                             ),
-                          ])
+                          ])*/
                     ],
                   ))
             ],

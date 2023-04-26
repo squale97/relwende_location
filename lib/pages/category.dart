@@ -241,6 +241,8 @@ class _CategoryPageState extends State<CategoryPage> {
                                                                           )));
                                                         },
                                                         child: Card(
+                                                          color:
+                                                              Colors.grey[300],
                                                           child: Container(
                                                               alignment:
                                                                   Alignment
@@ -258,12 +260,30 @@ class _CategoryPageState extends State<CategoryPage> {
                                                                         .center,
                                                                 children: [
                                                                   Image.network(
-                                                                    AppUrl.url +
-                                                                        'categorieImages/' +
-                                                                        id.toString(),
-                                                                    height: 50,
-                                                                    width: 50,
-                                                                  ),
+                                                                      AppUrl.url +
+                                                                          'categorieImages/' +
+                                                                          id
+                                                                              .toString(),
+                                                                      height:
+                                                                          50,
+                                                                      width: 50,
+                                                                      fit: BoxFit
+                                                                          .contain,
+                                                                      // errorBuilder: (),
+                                                                      errorBuilder: (context,
+                                                                          error,
+                                                                          stackTrace) {
+                                                                    return Image.asset(
+                                                                        "assets/icons/logo_traite.png",
+                                                                        height:
+                                                                            50, //size.width *
+                                                                        //  0.5,
+                                                                        width:
+                                                                            50, //size.width *
+                                                                        // 0.5,
+                                                                        fit: BoxFit
+                                                                            .contain);
+                                                                  }),
                                                                   Text(
                                                                       cat_name!),
                                                                 ],
@@ -289,7 +309,8 @@ class _CategoryPageState extends State<CategoryPage> {
                                     padding: EdgeInsets.only(left: 0),
                                     child: Text(
                                       "Vous Préfereriez aussi",
-                                      //style: TextStyle(fontSize: 20),
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                 ),

@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:cool_alert/cool_alert.dart';
+import 'package:easy_search_bar/easy_search_bar.dart';
 import 'package:flutter_ecommerce_app/account/profile_page.dart';
 import 'package:flutter_ecommerce_app/account/signup.dart';
+import 'package:flutter_ecommerce_app/info_user.dart';
 import 'package:flutter_ecommerce_app/pages/cart/components/body.dart';
 import 'package:flutter_ecommerce_app/pages/cart/shopping_cart.dart';
 import 'package:flutter_ecommerce_app/pages/categories_products/product_byCategorie.dart';
@@ -40,6 +42,36 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> with TickerProviderStateMixin {
   List categories = [];
+  String searchValue = '';
+  final List<String> _suggestions = [
+    'Afeganistan',
+    'Albania',
+    'Algeria',
+    'Australia',
+    'Brazil',
+    'German',
+    'Madagascar',
+    'Mozambique',
+    'Portugal',
+    'Zambia'
+  ];
+  //late List<ContenuS> _filteredProducts;
+  //late List<ContenuS> _searchProducts;
+  //late TextEditingController _searchController;
+  @override
+  void dispose() {
+    // _searchController.dispose();
+    super.dispose();
+  }
+
+  /* void _filterProducts(String query) {
+    setState(() {
+      _filteredProducts = _searchProducts
+          .where((product) =>
+              product.libele!.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    });
+  }*/
 
   Future<PanierModel> fetchPanier() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -95,6 +127,19 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     );
     //print(response.statusCode);
     if (response.statusCode == 200) {
+      setState(() {
+        for (int i = 0;
+            i <=
+                ProductByCategoryModel.fromJson(jsonDecode(response.body))
+                    .contenu!
+                    .length;
+            i++) {
+          /*_searchProducts.add(
+              ProductByCategoryModel.fromJson(jsonDecode(response.body))
+                  .contenu![i]);*/
+        }
+      });
+
       //print("ok");
       //  print(response.body.toString());
 
@@ -217,9 +262,12 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   num counter = 0;
   @override
   void initState() {
+    // fetchPanier();
     if (widget.isLoggedIn!) {
       fetchPanier();
     }
+    //  _filteredProducts = _searchProducts;
+    // _searchController = TextEditingController();
     _products = fetchProducts();
     // TODO: implement initState
     super.initState();
@@ -498,8 +546,38 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                 style: TextStyle(color: Colors.white),
               ),
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => OrderPage()));
+                if (widget.isLoggedIn == true) {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => OrderPage()));
+                } else {
+                  showDialog(
+                      // barrierDismissible: false,
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text("Alert"),
+                          content: Text(
+                              "Vous devez vous connecter pour accéder au panier"),
+                          actions: <Widget>[
+                            MaterialButton(
+                                onPressed: () {
+                                  //Navigator.of(context).pop();v
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => LoginPage()));
+                                  /*Navigator.pushAndRemoveUntil(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                        builder:
+                                                                            (context) =>
+                                                                                LoginPage()));*/
+                                },
+                                child: Text("ok"))
+                          ],
+                        );
+                      });
+                }
               },
             ),
             widget.isLoggedIn == false
@@ -530,7 +608,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => ProfilePage()));
+                              builder: (context) => InfoUserPage()));
                     },
                   ),
             widget.isLoggedIn == false
@@ -627,6 +705,17 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
               padding: EdgeInsets.only(top: size.height * 0.02),
               child: ListView(
                 children: [
+                  Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: TextField(
+                      //controller: _searchController,
+                      decoration: InputDecoration(
+                        hintText: 'Search products...',
+                        prefixIcon: Icon(Icons.search),
+                      ),
+                      // onChanged: _filterProducts,
+                    ),
+                  ),
                   ImageSlideshow(
                     /// Width of the [ImageSlideshow].
                     width: double.infinity,
@@ -1160,5 +1249,62 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                 ],
               )*/
     );
+  }
+}
+
+class ProductS {
+  String? couleur;
+  String? description;
+  int? id;
+  int? idCategorie;
+  String? image;
+  Null? index;
+  String? libele;
+  String? libeleCategorie;
+  int? prix;
+  String? reference;
+  int? stock;
+
+  ProductS(
+      {this.couleur,
+      this.description,
+      this.id,
+      this.idCategorie,
+      this.image,
+      this.index,
+      this.libele,
+      this.libeleCategorie,
+      this.prix,
+      this.reference,
+      this.stock});
+
+  ProductS.fromJson(Map<String, dynamic> json) {
+    couleur = json['couleur'];
+    description = json['description'];
+    id = json['id'];
+    idCategorie = json['idCategorie'];
+    image = json['image'];
+    index = json['index'];
+    libele = json['libele'];
+    libeleCategorie = json['libeleCategorie'];
+    prix = json['prix'];
+    reference = json['reference'];
+    stock = json['stock'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['couleur'] = this.couleur;
+    data['description'] = this.description;
+    data['id'] = this.id;
+    data['idCategorie'] = this.idCategorie;
+    data['image'] = this.image;
+    data['index'] = this.index;
+    data['libele'] = this.libele;
+    data['libeleCategorie'] = this.libeleCategorie;
+    data['prix'] = this.prix;
+    data['reference'] = this.reference;
+    data['stock'] = this.stock;
+    return data;
   }
 }

@@ -167,105 +167,110 @@ class _CartScreenState extends State<CartScreen> {
                 future: _panier, //fetchPanier(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    return RefreshIndicator(
-                      onRefresh: _pullRefresh,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: ListView.builder(
-                          itemCount:
-                              _products //snapshot.data!.contenu![0].produits!
-                                  .length, //demoCarts.length,
-                          itemBuilder: (context, index) {
-                            bool value = false;
-                            final product_title = snapshot
-                                .data!.contenu![0].produits![index].libele!;
-                            final product_id =
-                                snapshot.data!.contenu![0].produits![index].id;
-                            int? nbreItems = snapshot
-                                .data!.contenu![0].produits![index].index;
-                            num itemsN = nbreItems!;
-                            final price = snapshot
-                                .data!.contenu![0].produits![index].prix;
-                            final total = snapshot.data!.contenu![0].total;
-                            // setState(() {
-                            testItem = _products[index].index; //nbreItems!;
-                            // });
-                            totalPrice = total!;
-                            bool isChecked = false;
+                    if (_products.isNotEmpty) {
+                      return RefreshIndicator(
+                        onRefresh: _pullRefresh,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: ListView.builder(
+                            itemCount:
+                                _products //snapshot.data!.contenu![0].produits!
+                                    .length, //demoCarts.length,
+                            itemBuilder: (context, index) {
+                              bool value = false;
+                              final product_title = snapshot
+                                  .data!.contenu![0].produits![index].libele!;
+                              final product_id = snapshot
+                                  .data!.contenu![0].produits![index].id;
+                              int? nbreItems = snapshot
+                                  .data!.contenu![0].produits![index].index;
+                              num itemsN = nbreItems!;
+                              final price = snapshot
+                                  .data!.contenu![0].produits![index].prix;
+                              final total = snapshot.data!.contenu![0].total;
+                              // setState(() {
+                              testItem = _products[index].index; //nbreItems!;
+                              // });
+                              totalPrice = total!;
+                              bool isChecked = false;
 
-                            int? testNum = nbreItems;
-                            print(_products.length);
-                            if (_products.length == 0) {
-                              setState(() {
-                                isVide = true;
-                              });
-                              Center(child: Text("Votre panier est vide"));
-                              setState(() {
-                                totalPrice = 0;
-                              });
-                            } else {
-                              return Card(
-                                color: Colors.grey[300],
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 10),
-                                  child: Dismissible(
-                                    key: Key(
-                                        demoCarts[index].product.id.toString()),
-                                    direction: DismissDirection.endToStart,
-                                    onDismissed: (direction) async {
-                                      setState(() {
-                                        _products.removeAt(index);
-                                      });
-                                      SharedPreferences prefs =
-                                          await SharedPreferences.getInstance();
+                              int? testNum = nbreItems;
+                              print(_products.length);
+                              if (_products.length == 0) {
+                                setState(() {
+                                  isVide = true;
+                                });
+                                Center(child: Text("Votre panier est vide"));
+                                setState(() {
+                                  totalPrice = 0;
+                                });
+                              } else {
+                                return Card(
+                                  color: Colors.grey[300],
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 10),
+                                    child: Dismissible(
+                                      key: Key(demoCarts[index]
+                                          .product
+                                          .id
+                                          .toString()),
+                                      direction: DismissDirection.endToStart,
+                                      onDismissed: (direction) async {
+                                        setState(() {
+                                          _products.removeAt(index);
+                                        });
+                                        SharedPreferences prefs =
+                                            await SharedPreferences
+                                                .getInstance();
 
-                                      //Return double
-                                      int ID = prefs.getInt('ID');
-                                      String username = '54007038';
-                                      String password = '2885351';
-                                      String basicAuth =
-                                          'Basic ${base64Encode(utf8.encode('$username:$password'))}';
+                                        //Return double
+                                        int ID = prefs.getInt('ID');
+                                        String username = '54007038';
+                                        String password = '2885351';
+                                        String basicAuth =
+                                            'Basic ${base64Encode(utf8.encode('$username:$password'))}';
 
-                                      final response = await http.post(
-                                        AppUrl.url + "cart/product/purge",
-                                        headers: {
-                                          'Content-Type':
-                                              'application/json; charset=UTF-8',
-                                          'authorization': basicAuth
-                                        },
-                                        body: jsonEncode({
-                                          "user": ID,
-                                          "product": product_id
-                                        }),
-                                      );
-                                      if (response.statusCode == 200) {
-                                        CoolAlert.show(
-                                          context: context,
-                                          type: CoolAlertType.success,
-                                          text: 'Produit supprimé du panier!',
-                                          autoCloseDuration:
-                                              const Duration(seconds: 2),
+                                        final response = await http.post(
+                                          AppUrl.url + "cart/product/purge",
+                                          headers: {
+                                            'Content-Type':
+                                                'application/json; charset=UTF-8',
+                                            'authorization': basicAuth
+                                          },
+                                          body: jsonEncode({
+                                            "user": ID,
+                                            "product": product_id
+                                          }),
                                         );
-                                      }
-                                    },
-                                    background: Container(
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 20),
-                                      decoration: BoxDecoration(
-                                        color: Color(0xFFFFE6E6),
-                                        borderRadius: BorderRadius.circular(15),
+                                        if (response.statusCode == 200) {
+                                          CoolAlert.show(
+                                            context: context,
+                                            type: CoolAlertType.success,
+                                            text: 'Produit supprimé du panier!',
+                                            autoCloseDuration:
+                                                const Duration(seconds: 2),
+                                          );
+                                        }
+                                      },
+                                      background: Container(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 20),
+                                        decoration: BoxDecoration(
+                                          color: Color(0xFFFFE6E6),
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Spacer(),
+                                            //SvgPicture.asset("assets/icons/Trash.svg"),
+                                          ],
+                                        ),
                                       ),
-                                      child: Row(
-                                        children: [
-                                          Spacer(),
-                                          //SvgPicture.asset("assets/icons/Trash.svg"),
-                                        ],
-                                      ),
-                                    ),
-                                    //child: //Card(
-                                    //color: Colors.grey[300],
-                                    child: ListTile(
-                                      /*onChanged: (bool? value) {
+                                      //child: //Card(
+                                      //color: Colors.grey[300],
+                                      child: ListTile(
+                                        /*onChanged: (bool? value) {
                                       setState(() {
                                         _toggleProductSelection(index);
                                         _products[index].isChecked = value!;
@@ -274,81 +279,103 @@ class _CartScreenState extends State<CartScreen> {
                                         //print(confirmProducts);
                                       });
                                     },*/
-                                      // value: _selected[index],
-                                      //leading
-                                      leading: Wrap(
-                                          spacing:
-                                              12, // space between two icons
-                                          children: <Widget>[
-                                            //Che
-                                            Image.network(
-                                              AppUrl.url +
-                                                  "produitImages/" +
-                                                  product_id.toString(),
-                                              width: 75,
-                                              height: 75,
-                                            ),
-                                          ]),
-                                      title: Column(children: [
-                                        Text(
-                                          product_title,
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 16),
-                                          maxLines: 2,
-                                        ),
-                                        Text(
-                                          "$price frs",
-                                          // "x" +
-                                          //nbreItems
-                                          //  .toString(), //"\$${cart.product.price}",
-                                          style: GoogleFonts.poppins(
-                                            color: Colors.black,
-                                            //fontSize: size.height * 0.02,
-                                            fontWeight: FontWeight.bold,
+                                        // value: _selected[index],
+                                        //leading
+                                        leading: Wrap(
+                                            spacing:
+                                                12, // space between two icons
+                                            children: <Widget>[
+                                              //Che
+                                              Image.network(
+                                                AppUrl.url +
+                                                    "produitImages/" +
+                                                    product_id.toString(),
+                                                width: 75,
+                                                height: 75,
+                                                errorBuilder: (context, error,
+                                                    stackTrace) {
+                                                  return Image.asset(
+                                                      "assets/icons/logo_traite.png",
+                                                      height:
+                                                          75, //size.width * 0.5,
+                                                      width:
+                                                          75, //size.width * 0.5,
+                                                      fit: BoxFit
+                                                          .contain); /*SizedBox(
+                                                width: size.width * 0.5,
+                                                height: size.width * 0.5,
+                                                child: Align(
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                    color: defaultColor,
+                                                  ),
+                                                ),
+                                              );*/
+                                                },
+                                              ),
+                                            ]),
+                                        title: Column(children: [
+                                          Text(
+                                            product_title,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 16),
+                                            maxLines: 2,
                                           ),
-                                        ),
-                                      ]),
-                                      trailing: IconButton(
-                                          onPressed: () async {
-                                            SharedPreferences prefs =
-                                                await SharedPreferences
-                                                    .getInstance();
+                                          Text(
+                                            "$price frs",
+                                            // "x" +
+                                            //nbreItems
+                                            //  .toString(), //"\$${cart.product.price}",
+                                            style: GoogleFonts.poppins(
+                                              color: Colors.black,
+                                              //fontSize: size.height * 0.02,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ]),
+                                        trailing: IconButton(
+                                            onPressed: () async {
+                                              SharedPreferences prefs =
+                                                  await SharedPreferences
+                                                      .getInstance();
 
-                                            //Return double
-                                            int ID = prefs.getInt('ID');
-                                            String username = '54007038';
-                                            String password = '2885351';
-                                            String basicAuth =
-                                                'Basic ${base64Encode(utf8.encode('$username:$password'))}';
+                                              //Return double
+                                              int ID = prefs.getInt('ID');
+                                              String username = '54007038';
+                                              String password = '2885351';
+                                              String basicAuth =
+                                                  'Basic ${base64Encode(utf8.encode('$username:$password'))}';
 
-                                            final response = await http.post(
-                                              AppUrl.url + "cart/product/purge",
-                                              headers: {
-                                                'Content-Type':
-                                                    'application/json; charset=UTF-8',
-                                                'authorization': basicAuth
-                                              },
-                                              body: jsonEncode({
-                                                "user": ID,
-                                                "product": product_id
-                                              }),
-                                            );
-                                            if (response.statusCode == 200) {
-                                              CoolAlert.show(
-                                                context: context,
-                                                type: CoolAlertType.success,
-                                                text:
-                                                    'Produit supprimé du panier!',
-                                                autoCloseDuration:
-                                                    const Duration(seconds: 2),
+                                              final response = await http.post(
+                                                AppUrl.url +
+                                                    "cart/product/purge",
+                                                headers: {
+                                                  'Content-Type':
+                                                      'application/json; charset=UTF-8',
+                                                  'authorization': basicAuth
+                                                },
+                                                body: jsonEncode({
+                                                  "user": ID,
+                                                  "product": product_id
+                                                }),
                                               );
-                                            }
-                                          },
-                                          icon: Icon(Icons.delete)),
-                                      subtitle: Column(
-                                        children: [
-                                          /*Text(
+                                              if (response.statusCode == 200) {
+                                                CoolAlert.show(
+                                                  context: context,
+                                                  type: CoolAlertType.success,
+                                                  text:
+                                                      'Produit supprimé du panier!',
+                                                  autoCloseDuration:
+                                                      const Duration(
+                                                          seconds: 2),
+                                                );
+                                              }
+                                            },
+                                            icon: Icon(Icons.delete)),
+                                        subtitle: Column(
+                                          children: [
+                                            /*Text(
                                           price.toString(),
                                           // "x" +
                                           //nbreItems
@@ -359,138 +386,143 @@ class _CartScreenState extends State<CartScreen> {
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),*/
-                                          Row(
-                                            children: [
-                                              IconButton(
-                                                onPressed: () async {
-                                                  setState(() {
-                                                    isloading = true;
-                                                  });
-
-                                                  Timer.periodic(
-                                                      const Duration(
-                                                          seconds: 5), (t) {
+                                            Row(
+                                              children: [
+                                                IconButton(
+                                                  onPressed: () async {
                                                     setState(() {
-                                                      isloading =
-                                                          false; //set loading to false
-                                                    });
-                                                    t.cancel(); //stops the timer
-                                                  });
-
-                                                  SharedPreferences prefs =
-                                                      await SharedPreferences
-                                                          .getInstance();
-
-                                                  //Return double
-                                                  int ID = prefs.getInt('ID');
-                                                  String username = '54007038';
-                                                  String password = '2885351';
-                                                  String basicAuth =
-                                                      'Basic ${base64Encode(utf8.encode('$username:$password'))}';
-
-                                                  final response =
-                                                      await http.post(
-                                                    AppUrl.url +
-                                                        "cart/product/decrement",
-                                                    headers: {
-                                                      'Content-Type':
-                                                          'application/json; charset=UTF-8',
-                                                      'authorization': basicAuth
-                                                    },
-                                                    body: jsonEncode({
-                                                      "user": ID,
-                                                      "product": product_id
-                                                    }),
-                                                  );
-                                                  if (response.statusCode ==
-                                                      200) {
-                                                    setState(() {
-                                                      isloading = false;
-                                                    });
-                                                    setState(() {
-                                                      if (nbreItems! > 1) {
-                                                        print("ok");
-                                                        itemsN--;
-                                                        _products[index]
-                                                            .index--;
-                                                        _panier =
-                                                            fetchPanier(); //fetchPanier();
-                                                        //nbreItems = nbreItems! - 1;
-                                                        //print()
-                                                      }
+                                                      isloading = true;
                                                     });
 
-                                                    //fetchPanier();
-                                                    print("décrémenté");
-                                                  }
-                                                },
-                                                icon: Icon(Icons.remove),
-                                              ),
-                                              Text(_products[index]
-                                                  .index
-                                                  .toString()),
-                                              // Text('${itemsN}'),
-                                              IconButton(
-                                                onPressed: () async {
-                                                  setState(() {
-                                                    isloading = true;
-                                                  });
-
-                                                  Timer.periodic(
-                                                      const Duration(
-                                                          seconds: 5), (t) {
-                                                    setState(() {
-                                                      isloading =
-                                                          false; //set loading to false
+                                                    Timer.periodic(
+                                                        const Duration(
+                                                            seconds: 5), (t) {
+                                                      setState(() {
+                                                        isloading =
+                                                            false; //set loading to false
+                                                      });
+                                                      t.cancel(); //stops the timer
                                                     });
-                                                    t.cancel(); //stops the timer
-                                                  });
 
-                                                  SharedPreferences prefs =
-                                                      await SharedPreferences
-                                                          .getInstance();
+                                                    SharedPreferences prefs =
+                                                        await SharedPreferences
+                                                            .getInstance();
 
-                                                  //Return double
-                                                  int ID = prefs.getInt('ID');
-                                                  String username = '54007038';
-                                                  String password = '2885351';
-                                                  String basicAuth =
-                                                      'Basic ${base64Encode(utf8.encode('$username:$password'))}';
+                                                    //Return double
+                                                    int ID = prefs.getInt('ID');
+                                                    String username =
+                                                        '54007038';
+                                                    String password = '2885351';
+                                                    String basicAuth =
+                                                        'Basic ${base64Encode(utf8.encode('$username:$password'))}';
 
-                                                  final response =
-                                                      await http.post(
-                                                    AppUrl.url +
-                                                        "cart/product/increment",
-                                                    headers: {
-                                                      'Content-Type':
-                                                          'application/json; charset=UTF-8',
-                                                      'authorization': basicAuth
-                                                    },
-                                                    body: jsonEncode({
-                                                      "user": ID,
-                                                      "product": product_id
-                                                    }),
-                                                  );
-                                                  //  setState(() {
-                                                  //nbreItems = nbreItems! + 1;
-                                                  //});
-                                                  if (response.statusCode ==
-                                                      200) {
-                                                    setState(() {
-                                                      isloading = false;
-                                                      _products[index].index++;
-                                                      _panier = fetchPanier();
+                                                    final response =
+                                                        await http.post(
+                                                      AppUrl.url +
+                                                          "cart/product/decrement",
+                                                      headers: {
+                                                        'Content-Type':
+                                                            'application/json; charset=UTF-8',
+                                                        'authorization':
+                                                            basicAuth
+                                                      },
+                                                      body: jsonEncode({
+                                                        "user": ID,
+                                                        "product": product_id
+                                                      }),
+                                                    );
+                                                    if (response.statusCode ==
+                                                        200) {
+                                                      setState(() {
+                                                        isloading = false;
+                                                      });
+                                                      setState(() {
+                                                        if (nbreItems! > 1) {
+                                                          print("ok");
+                                                          itemsN--;
+                                                          _products[index]
+                                                              .index--;
+                                                          _panier =
+                                                              fetchPanier(); //fetchPanier();
+                                                          //nbreItems = nbreItems! - 1;
+                                                          //print()
+                                                        }
+                                                      });
+
                                                       //fetchPanier();
+                                                      print("décrémenté");
+                                                    }
+                                                  },
+                                                  icon: Icon(Icons.remove),
+                                                ),
+                                                Text(_products[index]
+                                                    .index
+                                                    .toString()),
+                                                // Text('${itemsN}'),
+                                                IconButton(
+                                                  onPressed: () async {
+                                                    setState(() {
+                                                      isloading = true;
                                                     });
-                                                  }
-                                                },
-                                                icon: Icon(Icons.add),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      /* trailing: Checkbox(
+
+                                                    Timer.periodic(
+                                                        const Duration(
+                                                            seconds: 5), (t) {
+                                                      setState(() {
+                                                        isloading =
+                                                            false; //set loading to false
+                                                      });
+                                                      t.cancel(); //stops the timer
+                                                    });
+
+                                                    SharedPreferences prefs =
+                                                        await SharedPreferences
+                                                            .getInstance();
+
+                                                    //Return double
+                                                    int ID = prefs.getInt('ID');
+                                                    String username =
+                                                        '54007038';
+                                                    String password = '2885351';
+                                                    String basicAuth =
+                                                        'Basic ${base64Encode(utf8.encode('$username:$password'))}';
+
+                                                    final response =
+                                                        await http.post(
+                                                      AppUrl.url +
+                                                          "cart/product/increment",
+                                                      headers: {
+                                                        'Content-Type':
+                                                            'application/json; charset=UTF-8',
+                                                        'authorization':
+                                                            basicAuth
+                                                      },
+                                                      body: jsonEncode({
+                                                        "user": ID,
+                                                        "product": product_id
+                                                      }),
+                                                    );
+                                                    //  setState(() {
+                                                    //nbreItems = nbreItems! + 1;
+                                                    //});
+                                                    if (response.statusCode ==
+                                                        200) {
+                                                      setState(() {
+                                                        isloading = false;
+                                                        _products[index]
+                                                            .index++;
+                                                        _panier = fetchPanier();
+                                                        //fetchPanier();
+                                                      });
+                                                    }
+                                                  },
+                                                  icon: Icon(Icons.add),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        /* trailing: Checkbox(
                                       value: _products[index].isChecked,
                                       onChanged: (bool? value) {
                                         setState(() {
@@ -499,7 +531,7 @@ class _CartScreenState extends State<CartScreen> {
                                         });
                                       },
                                     ),*/
-                                      /*Wrap(
+                                        /*Wrap(
                                       spacing: 12, // space between two icons
                                       children: <Widget>[
                                         InkWell(
@@ -603,11 +635,11 @@ class _CartScreenState extends State<CartScreen> {
                                               icon: Icon(Icons.check_box))*/
                                       ],
                                     )*/
-                                      // icon-2
+                                        // icon-2
+                                      ),
                                     ),
-                                  ),
 
-                                  /*Row(
+                                    /*Row(
                                       children: [
                                         SizedBox(
                                           width: 88,
@@ -764,14 +796,19 @@ class _CartScreenState extends State<CartScreen> {
                                         )
                                       ],
                                     ) */ //CartCard(cart: demoCarts[index]),
-                                  //),
-                                ),
-                              );
-                            }
-                          },
+                                    //),
+                                  ),
+                                );
+                              }
+                            },
+                          ),
                         ),
-                      ),
-                    );
+                      );
+                    } else {
+                      return Center(
+                        child: Text("panier vide"),
+                      );
+                    }
                   } else if (snapshot.hasError) {
                     return Text("${snapshot.error}");
                   }

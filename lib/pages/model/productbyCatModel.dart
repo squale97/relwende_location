@@ -1,6 +1,6 @@
 class ProductByCategoryModel {
   int? code;
-  List<Contenu>? contenu;
+  List<ContenuS>? contenu;
   String? title;
 
   ProductByCategoryModel({this.code, this.contenu, this.title});
@@ -8,9 +8,9 @@ class ProductByCategoryModel {
   ProductByCategoryModel.fromJson(Map<String, dynamic> json) {
     code = json['code'];
     if (json['contenu'] != null) {
-      contenu = <Contenu>[];
+      contenu = <ContenuS>[];
       json['contenu'].forEach((v) {
-        contenu!.add(new Contenu.fromJson(v));
+        contenu!.add(new ContenuS.fromJson(v));
       });
     }
     title = json['title'];
@@ -27,7 +27,7 @@ class ProductByCategoryModel {
   }
 }
 
-class Contenu {
+class ContenuS {
   String? description;
   int? id;
   int? idCategorie;
@@ -38,7 +38,7 @@ class Contenu {
   int? prix;
   int? stock;
 
-  Contenu(
+  ContenuS(
       {this.description,
       this.id,
       this.idCategorie,
@@ -49,7 +49,7 @@ class Contenu {
       this.prix,
       this.stock});
 
-  Contenu.fromJson(Map<String, dynamic> json) {
+  ContenuS.fromJson(Map<String, dynamic> json) {
     description = json['description'];
     id = json['id'];
     idCategorie = json['idCategorie'];

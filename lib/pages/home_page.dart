@@ -3,6 +3,7 @@ import 'package:flutter_ecommerce_app/account/account_page.dart';
 import 'package:flutter_ecommerce_app/account/login.dart';
 import 'package:flutter_ecommerce_app/account/profile_page.dart';
 import 'package:flutter_ecommerce_app/data/example_data.dart';
+import 'package:flutter_ecommerce_app/info_user.dart';
 import 'package:flutter_ecommerce_app/pages/cart/shopping_cart.dart';
 import 'package:flutter_ecommerce_app/pages/category.dart';
 import 'package:flutter_ecommerce_app/pages/home.dart';
@@ -55,7 +56,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       CartScreen(
         isLoggedIn: isloggedin,
       ),
-      ProfilePage()
+      InfoUserPage()
     ];
     Size size = MediaQuery.of(context).size; //check the size of device
     var brightness = MediaQuery.of(context).platformBrightness;

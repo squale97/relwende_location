@@ -180,7 +180,7 @@ class _DetailsPageState extends State<DetailsPage> {
                         ),*/
                           ),
                       Text(
-                        '${widget.price}\$',
+                        widget.price.toInt().toString() + 'Frs',
                         style: GoogleFonts.poppins(
                           color: defaultColor,
                           fontSize: size.height * 0.03,
