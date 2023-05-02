@@ -19,7 +19,7 @@
   </intent>
 </queries>
    <application
-        android:label="flutter_ecommerce_app"
+        android:label="RelwendeLocation"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

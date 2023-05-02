@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_ecommerce_app/Animation/FadeAnimation.dart';
+import 'package:flutter_ecommerce_app/account/login.dart';
+import 'package:flutter_ecommerce_app/pages/home_page.dart';
 import 'package:flutter_ecommerce_app/pages/model/user_model.dart';
 import 'package:flutter_ecommerce_app/pages/update_user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -44,6 +46,9 @@ class _InfoUserPageState extends State<InfoUserPage> {
         bio = UserModel.fromJson(jsonDecode(response.body)).contenu![0].prenom;
         tel = UserModel.fromJson(jsonDecode(response.body)).contenu![0].contact;
         email = UserModel.fromJson(jsonDecode(response.body)).contenu![0].email;
+        if (email == "") {
+          email = "non renseigné";
+        }
       });
       //print("ok");
       //  print(response.body.toString());
@@ -218,8 +223,29 @@ class _InfoUserPageState extends State<InfoUserPage> {
     } else {
       return Scaffold(
         body: Center(
-          child: Text("Veuillez vous connecter"),
-        ),
+            child: AlertDialog(
+          title: Text("Alert"),
+          content: Text("Vous devez vous connecter au préalable"),
+          actions: <Widget>[
+            MaterialButton(
+                onPressed: () {
+                  //Navigator.of(context).pop();v
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => HomePage(
+                                isLoggedin: false,
+                              )));
+                  /*Navigator.pushAndRemoveUntil(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                        builder:
+                                                                            (context) =>
+                                                                                LoginPage()));*/
+                },
+                child: Text("ok"))
+          ],
+        )),
       );
     }
   }

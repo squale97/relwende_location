@@ -8,6 +8,7 @@ import 'package:flutter_ecommerce_app/account/login.dart';
 import 'package:flutter_ecommerce_app/appUrl.dart';
 import 'package:flutter_ecommerce_app/pages/home_page.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl_phone_field/intl_phone_field.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -186,7 +187,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       const SizedBox(
                         height: 20,
                       ),
-                      Padding(
+                      /* Padding(
                         padding: const EdgeInsets.only(
                             left: 15.0, right: 15.0, top: 15, bottom: 0),
                         //padding: EdgeInsets.symmetric(horizontal: 15),
@@ -195,7 +196,8 @@ class _RegisterPageState extends State<RegisterPage> {
                           keyboardType: TextInputType.number,
                           inputFormatters: [
                             FilteringTextInputFormatter.deny(RegExp("[ ]")),
-                            FilteringTextInputFormatter.digitsOnly
+                            FilteringTextInputFormatter.digitsOnly,
+                            // LengthLimitingTextInputFormatter(8),
                           ],
                           controller: _numTelEditingController,
                           decoration: InputDecoration(
@@ -216,6 +218,48 @@ class _RegisterPageState extends State<RegisterPage> {
                               return "Veuillez entrer votre prénom";
                             }
                             return null;
+                          },
+                        ),
+                      ),*/
+                      Container(
+                        width: 350,
+                        child: IntlPhoneField(
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Veuillez entrer le  numéro de telephone";
+                            }
+                            return null;
+                          },
+                          controller: _numTelEditingController,
+                          inputFormatters: [
+                            //LengthLimitingTextInputFormatter(8),
+                          ],
+                          //maxLength: 75,
+                          decoration: InputDecoration(
+                              /*icon: Icon(
+                                Icons.phone,
+                                color: Colors.black,
+                              ),*/
+                              // focusColor: Colors.orange,
+                              enabledBorder: UnderlineInputBorder(
+                                //borderRadius: BorderRadius.circular(5),
+                                borderSide: BorderSide(color: Colors.black),
+                              ),
+                              labelText: 'numéro de téléphone',
+                              labelStyle: TextStyle(color: Colors.black),
+                              hintText: 'numéro de téléphone'),
+                          /*InputDecoration(
+                            labelText: 'Phone Number',
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(),
+                            ),
+                          ),*/
+                          //initialCountryCode: 'BFA',
+                          onChanged: (phone) {
+                            print(phone.completeNumber);
+
+                            _numEditingController.text = phone.completeNumber!;
+                            print('vrai' + _numEditingController.text);
                           },
                         ),
                       ),
@@ -348,6 +392,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         //height:60,
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
+                            print(_numEditingController.text);
                             String username = "54007038";
                             String password = "2885351";
                             print("clicked");
@@ -356,34 +401,41 @@ class _RegisterPageState extends State<RegisterPage> {
                                     utf8.encode('$username:$password'));
 
                             // if (_passwordEditingController.text!=_confirmPasswordEditingController.text){_formKey.currentState!.deactivate();}
-                            final response = await http.post(
-                                Uri.parse(
-                                  AppUrl.url + 'userRegister',
-                                ),
-                                headers: <String, String>{
-                                  HttpHeaders.authorizationHeader: basicAuth,
-                                  'Content-Type':
-                                      'application/json; charset=UTF-8'
-                                },
-                                body: jsonEncode(<String, String>{
-                                  "nom": _nameEditingController.text,
-                                  "prenom": _prenomEditingController.text,
-                                  "email": _emailEditingController.text,
-                                  "contact": _numTelEditingController.text,
-                                  // "num_cnib": _numEditingController.text,
-                                  "password": _passwordEditingController.text,
-                                  // "code_pin": _codePinEditingController.text,
-                                }));
+                            final response;
+                            try {
+                              response = await http.post(
+                                  Uri.parse(
+                                    AppUrl.url + 'userRegister',
+                                  ),
+                                  headers: <String, String>{
+                                    HttpHeaders.authorizationHeader: basicAuth,
+                                    'Content-Type':
+                                        'application/json; charset=UTF-8'
+                                  },
+                                  body: jsonEncode(<String, String>{
+                                    "nom": _nameEditingController.text,
+                                    "prenom": _prenomEditingController.text,
+                                    "email": _emailEditingController.text,
+                                    "contact": _numTelEditingController.text,
+                                    // "num_cnib": _numEditingController.text,
+                                    "password": _passwordEditingController.text,
+                                    // "code_pin": _codePinEditingController.text,
+                                  }));
+                            } catch (e) {
+                              return null;
+                            }
                             print(response.statusCode);
                             if (response.statusCode == 200) {
-                              CoolAlert.show(
-                                context: context,
-                                type: CoolAlertType.success,
-                                text:
-                                    'Votre compte a été créé: veuillez vous connecter!',
-                                autoCloseDuration: const Duration(seconds: 4),
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    "Inscription réussie!",
+                                    style: TextStyle(
+                                        fontSize: 14, color: Colors.green),
+                                  ),
+                                ),
                               );
-                              /*Navigator.pushReplacement(
+                              Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => LoginPage(
@@ -391,7 +443,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                           //solde: 0,
                                           //  numTelephone:
                                           // _numTelEditingController.text,
-                                          )));*/
+                                          )));
                             }
                           }
                         },

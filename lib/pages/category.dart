@@ -29,21 +29,25 @@ class CategoryPage extends StatefulWidget {
 }
 
 class _CategoryPageState extends State<CategoryPage> {
-  Future<ProductByCategoryModel>? _products;
-  Future<ProductByCategoryModel> fetchProducts() async {
+  Future<ProductByCategoryModel?>? _products;
+  Future<ProductByCategoryModel?> fetchProducts() async {
     String username = '54007038';
     String password = '2885351';
     String basicAuth =
         'Basic ${base64Encode(utf8.encode('$username:$password'))}';
-
-    final response = await http.get(
-      AppUrl.url + "produits",
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'authorization': basicAuth
-      },
-      //body: jsonEncode({"id": "1"}),
-    );
+    final response;
+    try {
+      response = await http.get(
+        AppUrl.url + "produits",
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'authorization': basicAuth
+        },
+        //body: jsonEncode({"id": "1"}),
+      );
+    } catch (e) {
+      return null;
+    }
     //print(response.statusCode);
     if (response.statusCode == 200) {
       //print("ok");
@@ -59,18 +63,23 @@ class _CategoryPageState extends State<CategoryPage> {
     }
   }
 
-  Future<CategoryModel> getCategories() async {
+  Future<CategoryModel?> getCategories() async {
     String username = '54007038';
     String password = '2885351';
     String basicAuth =
         'Basic ${base64Encode(utf8.encode('$username:$password'))}';
-    final response = await http.get(
-      '${AppUrl.url}categories',
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'authorization': basicAuth
-      },
-    );
+    final response;
+    try {
+      response = await http.get(
+        '${AppUrl.url}categories',
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'authorization': basicAuth
+        },
+      );
+    } catch (e) {
+      return null;
+    }
     // print(response.statusCode);
     if (response.statusCode == 200) {
       // print("ok");
@@ -160,16 +169,25 @@ class _CategoryPageState extends State<CategoryPage> {
                                     /// The widgets to display in the [ImageSlideshow].
                                     /// Add the sample image file into the images folder
                                     children: [
-                                      Image.network(
-                                        'https://oui-ceremonie.fr/wp-content/uploads/2019/10/tente-re%CC%81ception-location.png',
+                                      Image.asset(
+                                        'assets/icons/slide1.jpeg',
+                                        //'https://oui-ceremonie.fr/wp-content/uploads/2019/10/tente-re%CC%81ception-location.png',
                                         fit: BoxFit.cover,
                                       ),
-                                      Image.network(
-                                        'https://s.alicdn.com/@sc04/kf/H8a0ee69cda114831b0ec4383f23a4639J.jpg',
+                                      Image.asset(
+                                        'assets/icons/slide2.jpeg', //'https://s.alicdn.com/@sc04/kf/H8a0ee69cda114831b0ec4383f23a4639J.jpg',
                                         fit: BoxFit.cover,
                                       ),
-                                      Image.network(
-                                        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYUfNnBwujGG_UxWGlqyyyD7CBh95O7IAjOw&usqp=CAU',
+                                      Image.asset(
+                                        'assets/icons/slide3.jpeg', //'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYUfNnBwujGG_UxWGlqyyyD7CBh95O7IAjOw&usqp=CAU',
+                                        fit: BoxFit.cover,
+                                      ),
+                                      Image.asset(
+                                        'assets/icons/slide4.jpeg', //'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYUfNnBwujGG_UxWGlqyyyD7CBh95O7IAjOw&usqp=CAU',
+                                        fit: BoxFit.cover,
+                                      ),
+                                      Image.asset(
+                                        'assets/icons/slide5.jpeg', //'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYUfNnBwujGG_UxWGlqyyyD7CBh95O7IAjOw&usqp=CAU',
                                         fit: BoxFit.cover,
                                       ),
                                     ],
@@ -199,7 +217,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                         height:
                                             size.height, //size.width * 0.08,
                                         width: size.width * 0.96,
-                                        child: FutureBuilder<CategoryModel>(
+                                        child: FutureBuilder<CategoryModel?>(
                                           future: getCategories(),
                                           builder: (context, snapshot) {
                                             if (snapshot.hasData) {
@@ -296,7 +314,15 @@ class _CategoryPageState extends State<CategoryPage> {
 
                                             // By default, show a loading spinner.
                                             return Center(
-                                              child: SizedBox(),
+                                              child: Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  valueColor:
+                                                      AlwaysStoppedAnimation<
+                                                              Color>(
+                                                          Color(0xff3b22a1)),
+                                                ),
+                                              ),
                                             );
                                           },
                                         ))),
@@ -324,7 +350,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                         child: SizedBox(
                                           // width: size.width,
                                           child: FutureBuilder<
-                                              ProductByCategoryModel>(
+                                              ProductByCategoryModel?>(
                                             future: _products,
                                             builder: (context, snapshot) {
                                               if (snapshot.hasData) {

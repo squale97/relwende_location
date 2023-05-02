@@ -109,15 +109,3 @@ class _OrderPageState extends State<OrderPage> {
             }));
   }
 }
-
-class Order {
-  final int orderId;
-  final double totalAmount;
-  final DateTime orderDate;
-
-  Order({
-    required this.orderId,
-    required this.totalAmount,
-    required this.orderDate,
-  });
-}

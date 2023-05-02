@@ -330,7 +330,9 @@ class _ProductCategoriePageState extends State<ProductCategoriePage> {
 
             // By default, show a loading spinner.
             return Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Color(0xff3b22a1)),
+              ),
             );
           },
         ),

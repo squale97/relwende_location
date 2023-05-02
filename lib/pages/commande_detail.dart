@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'package:flutter_ecommerce_app/pages/commandes.dart';
 import 'package:flutter_ecommerce_app/pages/details_page.dart';
+import 'package:flutter_ecommerce_app/pages/orders.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:cool_alert/cool_alert.dart';
@@ -8,6 +10,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_ecommerce_app/appUrl.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/example_data.dart';
@@ -16,7 +19,9 @@ import 'model/productbyCatModel.dart';
 
 class CommmandeDetailPage extends StatefulWidget {
   List<Produits>? products;
-  CommmandeDetailPage({this.products});
+  String? dateLivraison;
+  int? id;
+  CommmandeDetailPage({this.products, this.dateLivraison, this.id});
 
   @override
   State<CommmandeDetailPage> createState() => _CommmandeDetailPageState();
@@ -53,14 +58,19 @@ class _CommmandeDetailPageState extends State<CommmandeDetailPage> {
   }
 
   List<Produits>? productList;
+  DateTime? dateL;
+  DateTime? dateLivrTest;
   @override
   void initState() {
     // TODO: implement initState
     productList = widget.products!;
+    if (widget.dateLivraison != "")
+      dateLivrTest = DateFormat('dd/MM/yyyy').parse(widget.dateLivraison!);
   }
 
   @override
   Widget build(BuildContext context) {
+    DateTime nowD = DateTime.now();
     Size size = MediaQuery.of(context).size; //check the size of device
     var brightness = MediaQuery.of(context).platformBrightness;
     bool isDarkMode = brightness ==
@@ -147,7 +157,223 @@ class _CommmandeDetailPageState extends State<CommmandeDetailPage> {
                 ),
               ),
             ),*/
-            TextButton(onPressed: () {}, child: Text("Annuler la commande")),
+
+            widget.dateLivraison != "" && nowD.isAfter(dateLivrTest!)
+                ? TextButton(
+                    child: Text("Confirmer la réception"),
+                    onPressed: () async {
+                      SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+
+                      //Return double
+                      int ID = prefs.getInt('ID');
+                      String username = '54007038';
+                      String password = '2885351';
+                      String basicAuth =
+                          'Basic ${base64Encode(utf8.encode('$username:$password'))}';
+
+                      final response = await http.post(
+                        AppUrl.url + "delete/commande",
+                        headers: {
+                          'Content-Type': 'application/json; charset=UTF-8',
+                          'authorization': basicAuth
+                        },
+                        body: jsonEncode({"id": widget.id}),
+                      );
+                      if (response.statusCode == 200) {
+                        //Navigator.pop(context);
+                        // fetchPanier();
+                        print("commande annulée");
+
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => OrderPageD()));
+                      }
+                    },
+                  )
+                : TextButton(
+                    onPressed: () {
+                      if (widget.dateLivraison != "") {
+                        print(widget.dateLivraison);
+                        dateL =
+                            DateFormat('dd/MM/yyyy').parse(widget.dateLivraison!
+                                // DateTime.parse(widget.dateLivraison!
+                                );
+                        DateTime now = DateTime.now();
+                        final later = now.add(const Duration(hours: 24));
+                        print(later);
+                        print(dateL!);
+                        print(later.isAfter(dateL!));
+                        if (later.compareTo(dateL!) > 0) {
+                          showDialog(
+                              // barrierDismissible: false,
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text("Alert"),
+                                  content: Text("Echéance dépassé"),
+                                  actions: <Widget>[
+                                    MaterialButton(
+                                        onPressed: () async {
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text("ok")),
+                                    /* MaterialButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text("Annuler"),
+                                )*/
+                                  ],
+                                );
+                              });
+                        } else {
+                          print("annulable");
+
+                          showDialog(
+                              // barrierDismissible: false,
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text("Alert"),
+                                  content: Text(
+                                      "Etes vous sur de vouloir annuler la commande?"),
+                                  actions: <Widget>[
+                                    MaterialButton(
+                                        onPressed: () async {
+                                          Navigator.pop(context);
+                                          print("commande annulée");
+                                          /*  DateTime dt2 =
+                                      DateTime.parse("2018-02-27 10:09:00");*/
+                                          //Navigator.of(context).pop();v
+                                          SharedPreferences prefs =
+                                              await SharedPreferences
+                                                  .getInstance();
+
+                                          //Return double
+                                          int ID = prefs.getInt('ID');
+                                          String username = '54007038';
+                                          String password = '2885351';
+                                          String basicAuth =
+                                              'Basic ${base64Encode(utf8.encode('$username:$password'))}';
+
+                                          final response = await http.post(
+                                            AppUrl.url + "delete/commande",
+                                            headers: {
+                                              'Content-Type':
+                                                  'application/json; charset=UTF-8',
+                                              'authorization': basicAuth
+                                            },
+                                            body: jsonEncode({"id": widget.id}),
+                                          );
+                                          if (response.statusCode == 200) {
+                                            //Navigator.pop(context);
+                                            // fetchPanier();
+
+                                            Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        OrderPageD()));
+                                          }
+                                          /*Navigator.pushAndRemoveUntil(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                        builder:
+                                                                            (context) =>
+                                                                                LoginPage()));*/
+                                        },
+                                        child: Text("oui")),
+                                    MaterialButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text("Annuler"),
+                                    )
+                                  ],
+                                );
+                              });
+                        }
+                      } else {
+                        showDialog(
+                            // barrierDismissible: false,
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Alert"),
+                                content: Text(
+                                    "Etes vous sur de vouloir annuler la commande?"),
+                                actions: <Widget>[
+                                  MaterialButton(
+                                      onPressed: () async {
+                                        print(widget.id);
+                                        //Navigator.pop(context);
+                                        print("commande annulée");
+                                        /*  DateTime dt2 =
+                                      DateTime.parse("2018-02-27 10:09:00");*/
+                                        //Navigator.of(context).pop();v
+                                        SharedPreferences prefs =
+                                            await SharedPreferences
+                                                .getInstance();
+
+                                        //Return double
+                                        int ID = prefs.getInt('ID');
+                                        String username = '54007038';
+                                        String password = '2885351';
+                                        String basicAuth =
+                                            'Basic ${base64Encode(utf8.encode('$username:$password'))}';
+
+                                        final response = await http.post(
+                                          AppUrl.url + "delete/commande",
+                                          headers: {
+                                            'Content-Type':
+                                                'application/json; charset=UTF-8',
+                                            'authorization': basicAuth
+                                          },
+                                          body: jsonEncode({"id": widget.id}),
+                                        );
+                                        if (response.statusCode == 200) {
+                                          //Navigator.pop(context);
+                                          // fetchPanier();
+                                          print("commande annulée");
+
+                                          Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      OrderPageD()));
+
+                                          /*Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  OrderPageD()));*/
+                                        }
+                                        /*Navigator.pushAndRemoveUntil(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                        builder:
+                                                                            (context) =>
+                                                                                LoginPage()));*/
+                                      },
+                                      child: Text("oui")),
+                                  MaterialButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text("Annuler"),
+                                  )
+                                ],
+                              );
+                            });
+                        print("date de livaison non renseignée");
+                      }
+                      DateTime now = DateTime.now();
+                      final later = now.add(const Duration(hours: 24));
+                      print(later);
+                    },
+                    child: Text("Annuler la commande")),
             Expanded(
               flex: 1,
               child: MaterialButton(

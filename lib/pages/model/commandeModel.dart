@@ -40,6 +40,7 @@ class Contenu {
   List<Produits>? produits;
   int? quantite;
   String? statut;
+  String? dateLivraisonSouhaite;
 
   Contenu(
       {this.addresseLivraison,
@@ -53,7 +54,8 @@ class Contenu {
       this.libele,
       this.produits,
       this.quantite,
-      this.statut});
+      this.statut,
+      this.dateLivraisonSouhaite});
 
   Contenu.fromJson(Map<String, dynamic> json) {
     addresseLivraison = json['addresseLivraison'];
@@ -73,6 +75,7 @@ class Contenu {
     }
     quantite = json['quantite'];
     statut = json['statut'];
+    dateLivraisonSouhaite = json['dateLivraisonSouhaite'];
   }
 
   Map<String, dynamic> toJson() {
@@ -91,6 +94,7 @@ class Contenu {
     }
     data['quantite'] = this.quantite;
     data['statut'] = this.statut;
+    data['dateLivraisonSouhaite'] = this.dateLivraisonSouhaite;
     return data;
   }
 }
@@ -102,7 +106,7 @@ class Produits {
   String? image;
   String? libele;
   String? libeleCategorie;
-  int? prix;
+  num? prix;
   String? reference;
   int? stock;
   int? index;

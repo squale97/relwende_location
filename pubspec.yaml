@@ -48,6 +48,8 @@ dependencies:
   flutter_email_sender: ^5.0.2
   url_launcher: ^6.1.10
   easy_search_bar: ^2.4.2
+  connectivity_plus: ^2.3.0
+  intl_phone_field: ^1.2.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -82,8 +84,13 @@ flutter:
     - assets/icons/logo_traite.png
     - assets/icons/minus.png
     - assets/icons/plus.png
-    - assets/images/
+    - assets/icons/slide1.jpeg
+    - assets/icons/slide2.jpeg
+    - assets/icons/slide3.jpeg
+    - assets/icons/slide4.jpeg
+    - assets/icons/slide5.jpeg
     - assets/ca/
+    - assets/images/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

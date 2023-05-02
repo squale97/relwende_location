@@ -2,7 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_ecommerce_app/pages/cart/test_cart.dart';
+import 'package:flutter_ecommerce_app/account/forgotPassword/stepFinal.dart';
+import 'package:flutter_ecommerce_app/connectivity/test_connexion.dart';
+import 'package:flutter_ecommerce_app/pages/cart/refresh_card_back.dart';
+import 'package:flutter_ecommerce_app/pages/orders.dart';
+
 import 'package:flutter_ecommerce_app/pages/home_page.dart';
 import 'package:flutter_ecommerce_app/pages/splashscreen.dart';
 import 'package:flutter_ecommerce_app/pages/test_bar.dart';

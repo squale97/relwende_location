@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ecommerce_app/Animation/FadeAnimation.dart';
+import 'package:flutter_ecommerce_app/account/forgotPassword/step1.dart';
 import 'package:flutter_ecommerce_app/account/signup.dart';
 import 'package:flutter_ecommerce_app/appUrl.dart';
 import 'package:flutter_ecommerce_app/pages/admin/admin_home.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_ecommerce_app/pages/home_page.dart';
 import 'package:get/get.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../pages/model/loginModel.dart';
@@ -91,261 +93,282 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   bool loading = true;
+  Future<bool> _onBackPressed() async {
+    // Your back press code here...
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => HomePage(
+                  isLoggedin: false,
+                )));
+    return true;
+  }
 
   @override
   Widget build(BuildContext context) {
     var brightness = MediaQuery.of(context).platformBrightness;
     bool isDarkMode = brightness == Brightness.dark;
-    return RawKeyboardListener(
-        autofocus: true,
-        focusNode: FocusNode(),
-        child: // WillPopScope(
-            // onWillPop: () async => false,
-            //child:
-            Scaffold(
-          floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
-          floatingActionButton: Row(
-              //crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                //SizedBox(height:15, width: 15,),
-                //   dropdownvalue=='Français'?Image.asset('icons/flags/png/fr.png', package: 'country_icons', width: 35, height: 35,):Image.asset('icons/flags/png/gb.png', package: 'country_icons', width: 35, height: 35,),
+    return WillPopScope(
+      onWillPop: _onBackPressed,
+      child: RawKeyboardListener(
+          autofocus: true,
+          focusNode: FocusNode(),
+          child: // WillPopScope(
+              // onWillPop: () async => false,
+              //child:
+              Scaffold(
+            floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
+            floatingActionButton: Row(
+                //crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  //SizedBox(height:15, width: 15,),
+                  //   dropdownvalue=='Français'?Image.asset('icons/flags/png/fr.png', package: 'country_icons', width: 35, height: 35,):Image.asset('icons/flags/png/gb.png', package: 'country_icons', width: 35, height: 35,),
 
-                SizedBox(
-                  width: 15,
-                ),
-              ]),
-          backgroundColor:
-              Colors.grey[300], //isDarkMode ? Colors.black : Colors.white,
-          /*appBar: PreferredSize(
-          preferredSize: Size.fromHeight(50),
-     child: AppBar(
-
-        backgroundColor: Colors.white,
-       // title: Text("Page de Connexion"),
-
-        /*leading: Builder(
-    builder: (BuildContext context) {
-      return   Row(children: [
-        //SizedBox(height:15, width: 15,),
-        dropdownvalue=='Français'?Image.asset('icons/flags/png/fr.png', package: 'country_icons', width: 35, height: 35,):Image.asset('icons/flags/png/gb.png', package: 'country_icons', width: 35, height: 35,),
-        
-           //SizedBox(width: 15,),
-        
-        Padding(
-          padding:EdgeInsets.only(top: 150),
-          child: DropdownButton(
-                
-              // Initial Value
-              value: dropdownvalue,
-                
-              // Down Arrow Icon
-              icon: const Icon(Icons.keyboard_arrow_down, ),    
-                
-              // Array list of items
-              items: items.map((String items) {
-                return DropdownMenuItem(
-                  value: items,
-                  child: Text(items),
-                );
-              }).toList(),
-              // After selecting the desired option,it will
-              // change button value to selected value
-              onChanged: (String newValue) { 
-                setState(() {
-                  dropdownvalue = newValue;
-                });
-              },)
-        )
-      ]
-            );
-    },
-  ),*/
-
-     )
-
-      ),
-      */
-          body: SingleChildScrollView(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                Center(
-                    child: Container(
-                        width: 400,
-                        child: Column(children: <Widget>[
-                          SizedBox(
-                            height: 50,
-                          ),
-                          /*Row(
-         //crossAxisAlignment: CrossAxisAlignment.start,
-         children: [
-         
-        //SizedBox(height:15, width: 15,),
-        dropdownvalue=='Français'?Image.asset('icons/flags/png/fr.png', package: 'country_icons', width: 35, height: 35,):Image.asset('icons/flags/png/gb.png', package: 'country_icons', width: 35, height: 35,),
-        
-           SizedBox(width: 15,),
-        
-        DropdownButton(
-                
-              // Initial Value
-              value: dropdownvalue,
-                
-              // Down Arrow Icon
-              icon: const Icon(Icons.keyboard_arrow_down, ),    
-                
-              // Array list of items
-              items: items.map((String items) {
-                return DropdownMenuItem(
-                  value: items,
-                  child: Text(items),
-                );
-              }).toList(),
-              // After selecting the desired option,it will
-              // change button value to selected value
-              onChanged: (String newValue) { 
-                setState(() {
-                  dropdownvalue = newValue;
-                });
-              },)
-      ]
-            ),*/
-                          Padding(
-                            padding: const EdgeInsets.only(top: 60.0),
-                            child: Center(
-                              child: Container(
-                                  child: SizedBox(
-                                      width: 150,
-                                      height: 150,
-                                      child: Image.asset(
-                                        "assets/icons/logo_traite.png",
-                                      ))),
+                  SizedBox(
+                    width: 15,
+                  ),
+                ]),
+            backgroundColor:
+                Colors.grey[300], //isDarkMode ? Colors.black : Colors.white,
+            /*appBar: PreferredSize(
+            preferredSize: Size.fromHeight(50),
+       child: AppBar(
+    
+          backgroundColor: Colors.white,
+         // title: Text("Page de Connexion"),
+    
+          /*leading: Builder(
+      builder: (BuildContext context) {
+        return   Row(children: [
+          //SizedBox(height:15, width: 15,),
+          dropdownvalue=='Français'?Image.asset('icons/flags/png/fr.png', package: 'country_icons', width: 35, height: 35,):Image.asset('icons/flags/png/gb.png', package: 'country_icons', width: 35, height: 35,),
+          
+             //SizedBox(width: 15,),
+          
+          Padding(
+            padding:EdgeInsets.only(top: 150),
+            child: DropdownButton(
+                  
+                // Initial Value
+                value: dropdownvalue,
+                  
+                // Down Arrow Icon
+                icon: const Icon(Icons.keyboard_arrow_down, ),    
+                  
+                // Array list of items
+                items: items.map((String items) {
+                  return DropdownMenuItem(
+                    value: items,
+                    child: Text(items),
+                  );
+                }).toList(),
+                // After selecting the desired option,it will
+                // change button value to selected value
+                onChanged: (String newValue) { 
+                  setState(() {
+                    dropdownvalue = newValue;
+                  });
+                },)
+          )
+        ]
+              );
+      },
+      ),*/
+    
+       )
+    
+        ),
+        */
+            body: SingleChildScrollView(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                  Center(
+                      child: Container(
+                          width: 400,
+                          child: Column(children: <Widget>[
+                            SizedBox(
+                              height: 50,
                             ),
-                          ),
-                          SizedBox(
-                            height: 50,
-                          ),
-                          Form(
-                            key: _formKey,
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 15),
-                                  child: TextFormField(
-                                    onFieldSubmitted: (value) {
-                                      if (_formKey.currentState!.validate()) {
-                                        _formKey.currentState!.save();
-//               var result = await auth.sendPasswordResetEmail(_email);
-//               print(result);
-                                        print("okay");
-                                        //Navigator.of(context).pop();
-                                      }
-                                    },
+                            /*Row(
+           //crossAxisAlignment: CrossAxisAlignment.start,
+           children: [
+           
+          //SizedBox(height:15, width: 15,),
+          dropdownvalue=='Français'?Image.asset('icons/flags/png/fr.png', package: 'country_icons', width: 35, height: 35,):Image.asset('icons/flags/png/gb.png', package: 'country_icons', width: 35, height: 35,),
+          
+             SizedBox(width: 15,),
+          
+          DropdownButton(
+                  
+                // Initial Value
+                value: dropdownvalue,
+                  
+                // Down Arrow Icon
+                icon: const Icon(Icons.keyboard_arrow_down, ),    
+                  
+                // Array list of items
+                items: items.map((String items) {
+                  return DropdownMenuItem(
+                    value: items,
+                    child: Text(items),
+                  );
+                }).toList(),
+                // After selecting the desired option,it will
+                // change button value to selected value
+                onChanged: (String newValue) { 
+                  setState(() {
+                    dropdownvalue = newValue;
+                  });
+                },)
+        ]
+              ),*/
+
+                            Padding(
+                              padding: const EdgeInsets.only(top: 60.0),
+                              child: Center(
+                                child: Container(
+                                    child: SizedBox(
+                                        width: 150,
+                                        height: 150,
+                                        child: Image.asset(
+                                          "assets/icons/logo_traite.png",
+                                        ))),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 50,
+                            ),
+                            Form(
+                              key: _formKey,
+                              child: Column(
+                                children: [
+                                  /*IntlPhoneField(
                                     inputFormatters: [
-                                      FilteringTextInputFormatter.deny(
-                                          RegExp('[ ]'))
+                                      LengthLimitingTextInputFormatter(8),
                                     ],
-                                    style: TextStyle(color: Colors.black),
-                                    controller: _nameEditingController,
+                                    maxLength: 150,
                                     decoration: InputDecoration(
-                                        /* icon: Icon(Icons.phone,
-                                            color: isDarkMode
-                                                ? Colors.white
-                                                : Colors.black),*/
-                                        focusColor: Colors.orange,
-                                        enabledBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          borderSide: BorderSide(
-                                              width: 2,
-                                              color: Colors.white // isDarkMode
-                                              // ? Colors.white
-                                              // : Colors.black,
-                                              ),
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
+                                      labelText: 'Phone Number',
+                                      border: OutlineInputBorder(
+                                        borderSide: BorderSide(),
+                                      ),
+                                    ),
+                                    //initialCountryCode: 'BFA',
+                                    onChanged: (phone) {
+                                      print(phone.completeNumber);
+                                    },
+                                  ),*/
+                                  Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 15),
+                                    child: TextFormField(
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.deny(
+                                            RegExp('[ ]')),
+                                        FilteringTextInputFormatter.digitsOnly,
+                                      ],
+                                      style: TextStyle(color: Colors.black),
+                                      decoration: InputDecoration(
+                                          /* icon: Icon(Icons.phone,
+                                              color: isDarkMode
+                                                  ? Colors.white
+                                                  : Colors.black),*/
+                                          focusColor: Colors.orange,
+                                          enabledBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
                                             borderSide: BorderSide(
-                                                color: Colors.grey.shade400)),
-                                        fillColor: Colors.grey.shade200,
-                                        filled: true,
-                                        //labelText: 'Numéro de téléphone',
-                                        //hintText
-                                        labelStyle: TextStyle(
-                                            color: isDarkMode
-                                                ? Colors.white
-                                                : Colors.black),
-                                        hintText: ' Numéro de telephone'),
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return "numéro de téléphone"; //dropdownvalue=='Français'?"Veuillez entrer le mot de passe":"Please enter the password";
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 15.0,
-                                      right: 15.0,
-                                      top: 15,
-                                      bottom: 0),
-                                  //padding: EdgeInsets.symmetric(horizontal: 15),
-                                  child: TextFormField(
-                                    obscureText: _isObscure,
-                                    inputFormatters: [
-                                      FilteringTextInputFormatter.deny(
-                                          RegExp('[ ]'))
-                                    ],
-                                    style: TextStyle(color: Colors.black),
-                                    controller: _urlEditingController,
-                                    // obscureText: true,
-                                    decoration: InputDecoration(
-                                        suffixIcon: IconButton(
-                                          icon: Icon(
-                                            color: Color(0xff3b22a1),
-                                            _isObscure
-                                                ? Icons.visibility_off
-                                                : Icons.visibility,
+                                                width: 2,
+                                                color:
+                                                    Colors.white // isDarkMode
+                                                // ? Colors.white
+                                                // : Colors.black,
+                                                ),
                                           ),
-                                          onPressed: _toggleObscure,
-                                        ),
-                                        // focusColor: Colors.orange,
-                                        enabledBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          borderSide: BorderSide(
-                                              width: 2,
-                                              color: Colors.white // isDarkMode
-                                              // ? Colors.white
-                                              // : Colors.black,
-                                              ),
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Colors.grey.shade400)),
-                                        fillColor: Colors.grey.shade200,
-                                        filled: true,
-                                        //labelText: 'Numéro de téléphone',
-                                        //hintText
-                                        labelStyle: TextStyle(
-                                            color: isDarkMode
-                                                ? Colors.white
-                                                : Colors.black),
-                                        hintText: 'Mot de passe'),
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return "password"; //dropdownvalue=='Français'?"Veuillez entrer le mot de passe":"Please enter the password";
-                                      }
-                                      return null;
-                                    },
+                                          focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.grey.shade400)),
+                                          fillColor: Colors.grey.shade200,
+                                          filled: true,
+                                          //labelText: 'Numéro de téléphone',
+                                          //hintText
+                                          labelStyle: TextStyle(
+                                              color: isDarkMode
+                                                  ? Colors.white
+                                                  : Colors.black),
+                                          hintText: ' Numéro de telephone'),
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return "numéro de téléphone"; //dropdownvalue=='Français'?"Veuillez entrer le mot de passe":"Please enter the password";
+                                        }
+                                        return null;
+                                      },
+                                    ),
                                   ),
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                FadeAnimation(
-                                    1.3,
-                                    Padding(
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 15.0,
+                                        right: 15.0,
+                                        top: 15,
+                                        bottom: 0),
+                                    //padding: EdgeInsets.symmetric(horizontal: 15),
+                                    child: TextFormField(
+                                      obscureText: _isObscure,
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.deny(
+                                            RegExp('[ ]'))
+                                      ],
+                                      style: TextStyle(color: Colors.black),
+                                      controller: _urlEditingController,
+                                      // obscureText: true,
+                                      decoration: InputDecoration(
+                                          suffixIcon: IconButton(
+                                            icon: Icon(
+                                              color: Color(0xff3b22a1),
+                                              _isObscure
+                                                  ? Icons.visibility_off
+                                                  : Icons.visibility,
+                                            ),
+                                            onPressed: _toggleObscure,
+                                          ),
+                                          // focusColor: Colors.orange,
+                                          enabledBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                            borderSide: BorderSide(
+                                                width: 2,
+                                                color:
+                                                    Colors.white // isDarkMode
+                                                // ? Colors.white
+                                                // : Colors.black,
+                                                ),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.grey.shade400)),
+                                          fillColor: Colors.grey.shade200,
+                                          filled: true,
+                                          //labelText: 'Numéro de téléphone',
+                                          //hintText
+                                          labelStyle: TextStyle(
+                                              color: isDarkMode
+                                                  ? Colors.white
+                                                  : Colors.black),
+                                          hintText: 'Mot de passe'),
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return "password"; //dropdownvalue=='Français'?"Veuillez entrer le mot de passe":"Please enter the password";
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Padding(
                                       padding:
                                           const EdgeInsets.only(bottom: 20),
                                       child: InkWell(
@@ -420,11 +443,11 @@ class _LoginPageState extends State<LoginPage> {
                                                                       context)
                                                                   .pop();
                                                               /*Navigator.pushAndRemoveUntil(
-                                                                  context,
-                                                                  MaterialPageRoute(
-                                                                      builder:
-                                                                          (context) =>
-                                                                              LoginPage()));*/
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                        builder:
+                                                                            (context) =>
+                                                                                LoginPage()));*/
                                                             },
                                                             child: Text("ok"))
                                                       ],
@@ -433,137 +456,150 @@ class _LoginPageState extends State<LoginPage> {
                                             }
 
                                             /*else {
-                                              print("erreur de connexion");
-                                              print("status code = " +
-                                                  response.statusCode
-                                                      .toString());
-                                            }*/
+                                                print("erreur de connexion");
+                                                print("status code = " +
+                                                    response.statusCode
+                                                        .toString());
+                                              }*/
                                           }
                                         },
                                         child: Container(
+                                          //color: Colors.red,
                                           height: 50,
                                           width: 250,
                                           decoration: BoxDecoration(
-                                              color: isDarkMode
-                                                  ? Colors.white
-                                                  : Colors.black,
+                                              color: Color(0xff3b22a1),
                                               borderRadius:
                                                   BorderRadius.circular(50)),
                                           child: Center(
                                             child: Text(
                                               "Se connecter",
                                               style: TextStyle(
-                                                  color: isDarkMode
-                                                      ? Colors.black
-                                                      : Colors.white,
+                                                  color: Colors.white,
                                                   fontWeight: FontWeight.bold),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                    )),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                FadeAnimation(
-                                    1.7,
-                                    InkWell(
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      LoginPage()));
-                                        },
-                                        child: Container(
-                                          height: 50,
-                                          width: 250,
-                                          decoration: BoxDecoration(
-                                              border: Border.all(
-                                                color: isDarkMode
-                                                    ? Colors.black
-                                                    : Colors.white,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(50)),
-                                          child: Center(
-                                            child: TextButton(
-                                              onPressed: () {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            RegisterPage()));
-                                              },
-                                              child: Text(
-                                                "Créér un compte",
-                                                style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontWeight:
-                                                        FontWeight.bold),
+                                      )),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  FadeAnimation(
+                                      1.7,
+                                      InkWell(
+                                          onTap: () {
+                                            /*   Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        LoginPage()));*/
+                                          },
+                                          child: InkWell(
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          RegisterPage()));
+                                            },
+                                            child: Container(
+                                              height: 50,
+                                              width: 250,
+                                              decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                    color: isDarkMode
+                                                        ? Colors.black
+                                                        : Colors.white,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          50)),
+                                              child: Center(
+                                                child: TextButton(
+                                                  onPressed: () {
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                RegisterPage()));
+                                                  },
+                                                  child: Text(
+                                                    "Créér un compte",
+                                                    style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                ),
                                               ),
                                             ),
+                                          ))),
+                                  Center(
+                                    child: TextButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    Forgot_Step1Page()));
+                                      },
+                                      child: Text("Mot de passe oublié?",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold)),
+                                    ),
+                                  ),
+                                  loading
+                                      ? CircularProgressIndicator(
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                            isDarkMode
+                                                ? Colors.black
+                                                : Colors.white,
                                           ),
-                                        ))),
-                                Center(
-                                  child: TextButton(
-                                    onPressed: () {},
-                                    child: Text("Mot de passe oublié?",
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold)),
-                                  ),
-                                ),
-                                loading
-                                    ? CircularProgressIndicator(
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                          isDarkMode
-                                              ? Colors.black
-                                              : Colors.white,
-                                        ),
-                                      )
-                                    : SizedBox(),
-                                SizedBox(height: 200),
-                                Text(
-                                  "V0.0.1",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: //isDarkMode
+                                        )
+                                      : SizedBox(),
+                                  SizedBox(height: 200),
+                                  Text(
+                                    "V0.0.1",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: //isDarkMode
 
-                                          Colors.black
-                                      // : Colors.white,
-                                      ),
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                Text(
-                                  "contact@relwende.com",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
+                                            Colors.black
+                                        // : Colors.white,
+                                        ),
                                   ),
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                Text(
-                                  "RelwendeLocations ® 2023",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
+                                  SizedBox(
+                                    height: 20,
                                   ),
-                                ),
-                                SizedBox(
-                                  height: 130,
-                                ),
-                              ],
-                            ),
-                          )
-                        ])))
-              ])),
-        ));
+                                  Text(
+                                    "contact@relwende.com",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Text(
+                                    "RelwendeLocations ® 2023",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 130,
+                                  ),
+                                ],
+                              ),
+                            )
+                          ])))
+                ])),
+          )),
+    );
   }
 
   void _showDialog(BuildContext context) {
