@@ -469,7 +469,10 @@ class _CartScreenState extends State<CartScreen> {
                                                                       });
                                                                       setState(
                                                                           () {
-                                                                        fetchPanier(); //fetchPanier();
+                                                                        fetchPanier();
+
+                                                                        _panier =
+                                                                            fetchPanier(); //fetchPanier();
                                                                         //nbreItems = nbreItems! - 1;
                                                                         //print()
                                                                         //}
@@ -1079,11 +1082,6 @@ class _CartScreenState extends State<CartScreen> {
                           Spacer(),
                           // Text("Ajouter un code promo"),
                           const SizedBox(width: 10),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            size: 12,
-                            color: kTextColor,
-                          )
                         ],
                       ),
                       SizedBox(height: 20),

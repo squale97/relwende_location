@@ -30,13 +30,14 @@ class _LoginPageState extends State<LoginPage> {
   String number = '';
   int? ID;
   bool _isObscure = true;
-
+  String? _text;
   void _toggleObscure() {
     setState(() {
       _isObscure = !_isObscure;
     });
   }
 
+  String? indic;
   Future<Null> loginUser(int? id) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('number', _nameEditingController.text);
@@ -261,9 +262,101 @@ class _LoginPageState extends State<LoginPage> {
                                     },
                                   ),*/
                                   Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 15.0,
+                                        right: 15.0,
+                                        top: 15,
+                                        bottom: 0),
+                                    child: IntlPhoneField(
+                                      initialCountryCode: 'BF',
+                                      controller: _nameEditingController,
+                                      decoration: InputDecoration(
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          borderSide: BorderSide(
+                                              width: 2,
+                                              color: Colors.white // isDarkMode
+                                              // ? Colors.white
+                                              // : Colors.black,
+                                              ),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.grey.shade400)),
+                                        fillColor: Colors.grey.shade200,
+                                        filled: true,
+                                        labelText: 'Numéro de téléphone',
+                                        //hintText
+                                        labelStyle:
+                                            TextStyle(color: Colors.black),
+                                        // hintText: 'Numéro'
+                                      ),
+                                      onChanged: (phone) {
+                                        print(phone.completeNumber);
+                                        setState(() {
+                                          indic = phone.countryCode;
+                                          _text = phone.completeNumber;
+                                        });
+                                      },
+                                      onCountryChanged: (country) {
+                                        print('Country changed to: ' +
+                                            country.name);
+                                      },
+                                    ),
+                                  ),
+                                  /* Container(
+                                    width: 350,
+                                    child: IntlPhoneField(
+                                      validator: (value) {
+                                        if (value == null ||
+                                            value.number == "") {
+                                          return "Veuillez entrer le  numéro de telephone";
+                                        }
+                                        return null;
+                                      },
+                                      controller: _nameEditingController,
+                                      inputFormatters: [
+                                        //LengthLimitingTextInputFormatter(8),
+                                      ],
+                                      //maxLength: 75,
+                                      decoration: InputDecoration(
+                                          /*icon: Icon(
+                                Icons.phone,
+                                color: Colors.black,
+                              ),*/
+                                          // focusColor: Colors.orange,
+                                          enabledBorder: UnderlineInputBorder(
+                                            //borderRadius: BorderRadius.circular(5),
+                                            borderSide:
+                                                BorderSide(color: Colors.black),
+                                          ),
+                                          labelText: 'numéro de téléphone',
+                                          labelStyle:
+                                              TextStyle(color: Colors.black),
+                                          hintText: 'numéro de téléphone'),
+                                      /*InputDecoration(
+                            labelText: 'Phone Number',
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(),
+                            ),
+                          ),*/
+                                      //initialCountryCode: 'BFA',
+                                      onChanged: (phone) {
+                                        print(phone.completeNumber);
+
+                                        _nameEditingController.text =
+                                            phone.completeNumber!;
+                                        print('vrai' +
+                                            _nameEditingController.text);
+                                      },
+                                    ),
+                                  ),*/
+                                  /* Padding(
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 15),
                                     child: TextFormField(
+                                      controller: _nameEditingController,
                                       inputFormatters: [
                                         FilteringTextInputFormatter.deny(
                                             RegExp('[ ]')),
@@ -306,7 +399,7 @@ class _LoginPageState extends State<LoginPage> {
                                         return null;
                                       },
                                     ),
-                                  ),
+                                  ),*/
                                   Padding(
                                     padding: const EdgeInsets.only(
                                         left: 15.0,
@@ -350,12 +443,10 @@ class _LoginPageState extends State<LoginPage> {
                                                   color: Colors.grey.shade400)),
                                           fillColor: Colors.grey.shade200,
                                           filled: true,
-                                          //labelText: 'Numéro de téléphone',
+                                          labelText: 'Mot de passe',
                                           //hintText
-                                          labelStyle: TextStyle(
-                                              color: isDarkMode
-                                                  ? Colors.white
-                                                  : Colors.black),
+                                          labelStyle:
+                                              TextStyle(color: Colors.black),
                                           hintText: 'Mot de passe'),
                                       validator: (value) {
                                         if (value == null || value.isEmpty) {
@@ -372,103 +463,134 @@ class _LoginPageState extends State<LoginPage> {
                                       padding:
                                           const EdgeInsets.only(bottom: 20),
                                       child: InkWell(
-                                        onTap: () async {
-                                          //if (AppResponsive.isMobile(context)){print("mobile");}else print("non mobile");
-                                          String username = "54007038";
-                                          String password = "2885351";
-                                          print("clicked");
-                                          String basicAuth = 'Basic ' +
-                                              base64Encode(utf8.encode(
-                                                  '$username:$password'));
+                                        onTap: _text == null || _text == ''
+                                            ? null
+                                            : () async {
+                                                //if (AppResponsive.isMobile(context)){print("mobile");}else print("non mobile");
+                                                String username = "54007038";
+                                                String password = "2885351";
+                                                print("clicked");
+                                                String basicAuth = 'Basic ' +
+                                                    base64Encode(utf8.encode(
+                                                        '$username:$password'));
 
-                                          if (_formKey.currentState!
-                                              .validate()) {
-                                            final response = await http.post(
-                                                Uri.parse(
-                                                  AppUrl.url + 'loginUser',
-                                                ),
-                                                headers: <String, String>{
-                                                  'authorization': basicAuth,
-                                                  'Content-Type':
-                                                      'application/json; charset=UTF-8'
-                                                },
-                                                body:
-                                                    jsonEncode(<String, String>{
-                                                  "contact":
-                                                      _nameEditingController
-                                                          .text,
-                                                  "password":
-                                                      _urlEditingController
-                                                          .text,
-                                                }));
-                                            if (LoginModel.fromJson(jsonDecode(
-                                                        response.body))
-                                                    .code ==
-                                                200) {
-                                              print(("connexion réussie"));
-                                              print(LoginModel.fromJson(
-                                                      jsonDecode(response.body))
-                                                  .id);
-                                              loginUser(LoginModel.fromJson(
-                                                      jsonDecode(response.body))
-                                                  .id);
+                                                if (_formKey.currentState!
+                                                    .validate()) {
+                                                  setState(() {
+                                                    loading = true;
+                                                  });
+                                                  final response =
+                                                      await http.post(
+                                                          Uri.parse(
+                                                            AppUrl.url +
+                                                                'loginUser',
+                                                          ),
+                                                          headers: <String,
+                                                              String>{
+                                                            'authorization':
+                                                                basicAuth,
+                                                            'Content-Type':
+                                                                'application/json; charset=UTF-8'
+                                                          },
+                                                          body: jsonEncode(<
+                                                              String, String>{
+                                                            "contact": indic! +
+                                                                _nameEditingController
+                                                                    .text,
+                                                            "password":
+                                                                _urlEditingController
+                                                                    .text,
+                                                          }));
+                                                  if (response.statusCode ==
+                                                      200) {
+                                                    setState(() {
+                                                      loading = false;
+                                                    });
+                                                    print(
+                                                        ("connexion réussie"));
+                                                    print(LoginModel.fromJson(
+                                                            jsonDecode(
+                                                                response.body))
+                                                        .id);
+                                                    loginUser(
+                                                        LoginModel.fromJson(
+                                                                jsonDecode(
+                                                                    response
+                                                                        .body))
+                                                            .id);
 
-                                              Navigator.pushAndRemoveUntil(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          HomePage(
-                                                            isLoggedin: true,
-                                                          )),
-                                                  (Route<dynamic> route) =>
-                                                      false);
-                                            } else if (response.statusCode ==
-                                                401) {
-                                              //print(ErrorModel.fromJson(jsonDecode(response.body)).title);
-                                              print(response.body + "dnndnn");
-                                              print("nonnnnn");
-                                              showDialog(
-                                                  // barrierDismissible: false,
-                                                  context: context,
-                                                  builder:
-                                                      (BuildContext context) {
-                                                    return AlertDialog(
-                                                      title: Text("Alert"),
-                                                      content: Text(
-                                                          "identifiants invalides"),
-                                                      actions: <Widget>[
-                                                        MaterialButton(
-                                                            onPressed: () {
-                                                              Navigator.of(
-                                                                      context)
-                                                                  .pop();
-                                                              /*Navigator.pushAndRemoveUntil(
+                                                    Navigator
+                                                        .pushAndRemoveUntil(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        HomePage(
+                                                                          isLoggedin:
+                                                                              true,
+                                                                        )),
+                                                            (Route<dynamic>
+                                                                    route) =>
+                                                                false);
+                                                  } else if (response
+                                                          .statusCode ==
+                                                      401) {
+                                                    setState(() {
+                                                      loading = false;
+                                                    });
+                                                    //print(ErrorModel.fromJson(jsonDecode(response.body)).title);
+                                                    print(response.body +
+                                                        "dnndnn");
+                                                    print("nonnnnn");
+                                                    showDialog(
+                                                        // barrierDismissible: false,
+                                                        context: context,
+                                                        builder: (BuildContext
+                                                            context) {
+                                                          return AlertDialog(
+                                                            title:
+                                                                Text("Alert"),
+                                                            content: Text(
+                                                                "identifiants invalides"),
+                                                            actions: <Widget>[
+                                                              MaterialButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    Navigator.of(
+                                                                            context)
+                                                                        .pop();
+                                                                    /*Navigator.pushAndRemoveUntil(
                                                                     context,
                                                                     MaterialPageRoute(
                                                                         builder:
                                                                             (context) =>
                                                                                 LoginPage()));*/
-                                                            },
-                                                            child: Text("ok"))
-                                                      ],
-                                                    );
-                                                  });
-                                            }
+                                                                  },
+                                                                  child: Text(
+                                                                      "ok"))
+                                                            ],
+                                                          );
+                                                        });
+                                                  }
 
-                                            /*else {
+                                                  /*else {
                                                 print("erreur de connexion");
                                                 print("status code = " +
                                                     response.statusCode
                                                         .toString());
                                               }*/
-                                          }
-                                        },
+                                                }
+                                              },
                                         child: Container(
                                           //color: Colors.red,
                                           height: 50,
                                           width: 250,
                                           decoration: BoxDecoration(
-                                              color: Color(0xff3b22a1),
+                                              color: _text != null &&
+                                                      _text!.isNotEmpty
+                                                  ? Color(0xff3b22a1)
+                                                  : Colors.grey[
+                                                      300], //Color(0xff3b22a1),
                                               borderRadius:
                                                   BorderRadius.circular(50)),
                                           child: Center(

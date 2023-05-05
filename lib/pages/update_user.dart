@@ -8,6 +8,7 @@ import 'package:flutter_ecommerce_app/account/login.dart';
 import 'package:flutter_ecommerce_app/appUrl.dart';
 import 'package:flutter_ecommerce_app/pages/home_page.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UpdateUserPage extends StatefulWidget {
@@ -23,7 +24,7 @@ class UpdateUserPage extends StatefulWidget {
 
 class _UpdateUserPageState extends State<UpdateUserPage> {
   bool _isObscure = true;
-
+  String? indic;
   void _toggleObscure() {
     setState(() {
       _isObscure = !_isObscure;
@@ -196,7 +197,8 @@ class _UpdateUserPageState extends State<UpdateUserPage> {
                         padding: const EdgeInsets.only(
                             left: 15.0, right: 15.0, top: 15, bottom: 0),
                         //padding: EdgeInsets.symmetric(horizontal: 15),
-                        child: TextFormField(
+                        child: IntlPhoneField(
+                          initialCountryCode: 'BF',
                           style: TextStyle(color: Colors.black),
                           keyboardType: TextInputType.number,
                           inputFormatters: [
@@ -217,9 +219,17 @@ class _UpdateUserPageState extends State<UpdateUserPage> {
                               labelText: 'numéro de téléphone',
                               labelStyle: TextStyle(color: Colors.black),
                               hintText: widget.num),
+                          onChanged: (phone) {
+                            print(phone.completeNumber);
+                            setState(() {
+                              indic = phone.countryCode;
+                            });
+                            _numEditingController.text = phone.completeNumber!;
+                            print('vrai' + _numEditingController.text);
+                          },
                           validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return "Veuillez entrer votre prénom";
+                            if (value == null || value.number == "") {
+                              return "Veuillez entrer le numéro";
                             }
                             return null;
                           },
@@ -381,7 +391,8 @@ class _UpdateUserPageState extends State<UpdateUserPage> {
                                   "nom": _nameEditingController.text,
                                   "prenom": _prenomEditingController.text,
                                   "email": _emailEditingController.text,
-                                  "contact": _numTelEditingController.text,
+                                  "contact":
+                                      indic! + _numTelEditingController.text,
                                   // "num_cnib": _numEditingController.text,
                                   // "password": _passwordEditingController.text,
                                   // "code_pin": _codePinEditingController.text,

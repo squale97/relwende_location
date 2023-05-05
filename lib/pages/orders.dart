@@ -278,7 +278,7 @@ class _OrderPageDState extends State<OrderPageD> {
                                                                           livraisonDate) ==
                                                                       true
                                                                   ? Text(
-                                                                      "LIvraison prévue le : " +
+                                                                      "Livraison prévue le : " +
                                                                           snapshot
                                                                               .data!
                                                                               .contenu![index]
@@ -318,7 +318,8 @@ class _OrderPageDState extends State<OrderPageD> {
                                                                         .contenu![
                                                                             index]
                                                                         .dureeLocation!
-                                                                        .toString(),
+                                                                        .toString() +
+                                                                    ' jour(s)',
                                                                 style: TextStyle(
                                                                     fontWeight:
                                                                         FontWeight

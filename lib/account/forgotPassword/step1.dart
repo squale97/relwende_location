@@ -7,6 +7,7 @@ import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_ecommerce_app/account/forgotPassword/step2.dart';
 import 'package:flutter_ecommerce_app/appUrl.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl_phone_field/intl_phone_field.dart';
 
 class Forgot_Step1Page extends StatefulWidget {
   const Forgot_Step1Page({super.key});
@@ -20,6 +21,7 @@ class _Forgot_Step1PageState extends State<Forgot_Step1Page> {
   final _formKey = GlobalKey<FormState>();
   String? _text = '';
   String? numero;
+  String? indic;
   @override
   void initState() {
     print(_numEditingController.text);
@@ -54,10 +56,12 @@ class _Forgot_Step1PageState extends State<Forgot_Step1Page> {
               key: _formKey,
               child: Column(
                 children: [
-                  TextFormField(
-                    onChanged: (value) {
+                  IntlPhoneField(
+                    initialCountryCode: 'BF',
+                    onChanged: (phone) {
                       setState(() {
-                        _text = value;
+                        _text = phone.completeNumber;
+                        indic = phone.countryCode;
                       });
                     },
                     inputFormatters: [
@@ -88,8 +92,8 @@ class _Forgot_Step1PageState extends State<Forgot_Step1Page> {
                         labelStyle: TextStyle(color: Colors.black),
                         hintText: 'Numero de téléphone'),
                     validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "password"; //dropdownvalue=='Français'?"Veuillez entrer le mot de passe":"Please enter the password";
+                      if (value == null || value.number == '') {
+                        return "telephone"; //dropdownvalue=='Français'?"Veuillez entrer le mot de passe":"Please enter the password";
                       }
                       return null;
                     },
@@ -105,6 +109,9 @@ class _Forgot_Step1PageState extends State<Forgot_Step1Page> {
                           onTap: _text == null || _text == ''
                               ? null
                               : () async {
+                                  print(
+                                    indic! + _numEditingController.text,
+                                  );
                                   //print(_formKey.currentState!.validate());
                                   //if (AppResponsive.isMobile(context)){print("mobile");}else print("non mobile");
                                   String username = "54007038";
@@ -127,7 +134,7 @@ class _Forgot_Step1PageState extends State<Forgot_Step1Page> {
                                                 'application/json; charset=UTF-8'
                                           },
                                           body: jsonEncode({
-                                            "telephone":
+                                            "telephone": indic! +
                                                 _numEditingController.text,
                                           }));
                                     } catch (e) {
@@ -135,7 +142,8 @@ class _Forgot_Step1PageState extends State<Forgot_Step1Page> {
                                     }
                                     print(response.statusCode);
                                     if (response.statusCode == 200) {
-                                      numero = _numEditingController.text;
+                                      numero =
+                                          indic! + _numEditingController.text;
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                         SnackBar(
@@ -156,7 +164,7 @@ class _Forgot_Step1PageState extends State<Forgot_Step1Page> {
                                                   Forgot_Step2Page(
                                                     numTel: numero,
                                                   )));
-                                      _numEditingController.text = "";
+                                      // _numEditingController.text = "";
                                     } else {
                                       showDialog(
                                           // barrierDismissible: false,

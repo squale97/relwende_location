@@ -1,9 +1,11 @@
 import 'dart:convert';
 
+import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:flutter_ecommerce_app/account/forgotPassword/stepFinal.dart';
 import 'package:flutter_ecommerce_app/account/login.dart';
 import 'package:flutter_ecommerce_app/appUrl.dart';
 import 'package:http/http.dart' as http;
@@ -110,6 +112,8 @@ class _Forgot_Step2PageState extends State<Forgot_Step2Page> {
                         onTap: _text == null || _text == ''
                             ? null
                             : () async {
+                                print(widget.numTel);
+                                print(_codeEditingController.text);
                                 //print(_formKey.currentState!.validate());
                                 //if (AppResponsive.isMobile(context)){print("mobile");}else print("non mobile");
                                 String username = "54007038";
@@ -140,10 +144,12 @@ class _Forgot_Step2PageState extends State<Forgot_Step2Page> {
                                   }
                                   print(response.statusCode);
                                   if (response.statusCode == 200) {
-                                    Navigator.push(
+                                    Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => LoginPage()));
+                                            builder: (context) => StepFinalPage(
+                                                  tel: widget.numTel,
+                                                )));
                                   }
                                 }
                               },
@@ -169,7 +175,45 @@ class _Forgot_Step2PageState extends State<Forgot_Step2Page> {
             )),
         TextButton(
           child: Text('Renvoyer le code'),
-          onPressed: () {},
+          onPressed: () async {
+            String username = "54007038";
+            String password = "2885351";
+            print("clicked");
+            String basicAuth =
+                'Basic ' + base64Encode(utf8.encode('$username:$password'));
+
+            // if (_formKey.currentState!.validate()) {
+            final response;
+            try {
+              response = await http.post(
+                  Uri.parse(
+                    AppUrl.url + 'getcode',
+                  ),
+                  headers: <String, String>{
+                    'authorization': basicAuth,
+                    'Content-Type': 'application/json; charset=UTF-8'
+                  },
+                  body: jsonEncode({"telephone": widget.numTel}));
+            } catch (e) {
+              return null;
+            }
+            if (response.statusCode == 200) {
+              print("code renvoyé");
+              CoolAlert.show(
+                context: context,
+                type: CoolAlertType.info,
+                text: 'Code envoyé',
+                autoCloseDuration: const Duration(seconds: 2),
+              );
+            } else {
+              CoolAlert.show(
+                context: context,
+                type: CoolAlertType.error,
+                text: 'Erreur',
+                autoCloseDuration: const Duration(seconds: 2),
+              );
+            }
+          },
         )
       ]),
     );

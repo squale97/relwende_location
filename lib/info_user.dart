@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:convert';
 
+import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
@@ -79,11 +81,11 @@ class _InfoUserPageState extends State<InfoUserPage> {
   Widget build(BuildContext context) {
     if (widget.isLoggedIn == true) {
       return Scaffold(
-        bottomSheet: Container(
+        /*bottomSheet: Container(
             //alignment: Alignment.bottomCenter,
             margin:
                 EdgeInsets.only(left: MediaQuery.of(context).size.width / 4),
-            child: Text("RelwendeLocations ® 2023")),
+            child: Text("RelwendeLocations ® 2023")),*/
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -195,8 +197,100 @@ class _InfoUserPageState extends State<InfoUserPage> {
                         ),
                       )),
                   SizedBox(
-                    height: 20,
+                    height: 10,
                   ),
+                  TextButton(
+                    onPressed: () {
+                      showDialog(
+                          // barrierDismissible: false,
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text("Alert"),
+                              content: Text(
+                                  "Etes vous sur de vouloir supprimer votre compte définitivement? vous perdrez toutes les infos de panier et de commande"),
+                              actions: <Widget>[
+                                MaterialButton(
+                                    onPressed: () async {
+                                      Navigator.of(context).pop();
+                                      SharedPreferences prefs =
+                                          await SharedPreferences.getInstance();
+
+                                      //Return double
+                                      int ID = prefs.getInt('ID');
+                                      String username = '54007038';
+                                      String password = '2885351';
+                                      String basicAuth =
+                                          'Basic ${base64Encode(utf8.encode('$username:$password'))}';
+                                      final response;
+                                      try {
+                                        response = await http.post(
+                                            Uri.parse(
+                                              AppUrl.url + 'delete/user',
+                                            ),
+                                            headers: <String, String>{
+                                              'authorization': basicAuth,
+                                              'Content-Type':
+                                                  'application/json; charset=UTF-8'
+                                            },
+                                            body: jsonEncode({"id": ID}));
+                                      } catch (e) {
+                                        //print(e);
+                                        return null;
+                                      }
+                                      // print(response.statusCode);
+                                      if (response.statusCode == 200) {
+                                        prefs.setString('number', null);
+                                        prefs.setInt('ID', null);
+
+                                        print("compte supprimé");
+
+                                        CoolAlert.show(
+                                          context: context,
+                                          type: CoolAlertType.info,
+                                          text: 'Votre compte a été supprime',
+                                        );
+
+                                        Timer(Duration(seconds: 3), () {
+                                          Navigator.pushAndRemoveUntil(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      HomePage(
+                                                        isLoggedin: false,
+                                                      )),
+                                              (Route<dynamic> route) => false);
+                                          // print("Yeah, this line is printed after 3 seconds");
+                                        });
+                                      }
+                                      // print("ok");
+                                      // print(object)
+
+                                      /*Navigator.pushAndRemoveUntil(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                        builder:
+                                                                            (context) =>
+                                                                                LoginPage()));*/
+                                    },
+                                    child: Text("oui")),
+                                MaterialButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                      /*Navigator.pushAndRemoveUntil(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                        builder:
+                                                                            (context) =>
+                                                                                LoginPage()));*/
+                                    },
+                                    child: Text("annuler"))
+                              ],
+                            );
+                          });
+                    },
+                    child: Text("Supprimer mon compte"),
+                  )
                 ],
               ),
             ) /* ListView.builder(

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -19,7 +20,7 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   bool _isObscure = true;
-
+  bool isloading = false;
   void _toggleObscure() {
     setState(() {
       _isObscure = !_isObscure;
@@ -36,6 +37,7 @@ class _RegisterPageState extends State<RegisterPage> {
       TextEditingController();
   TextEditingController _passwordEditingController = TextEditingController();
   TextEditingController _codePinEditingController = TextEditingController();
+  String? indic;
   @override
   Widget build(BuildContext context) {
     var brightness = MediaQuery.of(context).platformBrightness;
@@ -224,8 +226,9 @@ class _RegisterPageState extends State<RegisterPage> {
                       Container(
                         width: 350,
                         child: IntlPhoneField(
+                          initialCountryCode: 'BF',
                           validator: (value) {
-                            if (value == null || value.isEmpty) {
+                            if (value == null || value.number == "") {
                               return "Veuillez entrer le  numéro de telephone";
                             }
                             return null;
@@ -257,7 +260,9 @@ class _RegisterPageState extends State<RegisterPage> {
                           //initialCountryCode: 'BFA',
                           onChanged: (phone) {
                             print(phone.completeNumber);
-
+                            setState(() {
+                              indic = phone.countryCode;
+                            });
                             _numEditingController.text = phone.completeNumber!;
                             print('vrai' + _numEditingController.text);
                           },
@@ -392,6 +397,9 @@ class _RegisterPageState extends State<RegisterPage> {
                         //height:60,
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
+                            setState(() {
+                              isloading = true;
+                            });
                             print(_numEditingController.text);
                             String username = "54007038";
                             String password = "2885351";
@@ -416,7 +424,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                     "nom": _nameEditingController.text,
                                     "prenom": _prenomEditingController.text,
                                     "email": _emailEditingController.text,
-                                    "contact": _numTelEditingController.text,
+                                    "contact":
+                                        indic! + _numTelEditingController.text,
                                     // "num_cnib": _numEditingController.text,
                                     "password": _passwordEditingController.text,
                                     // "code_pin": _codePinEditingController.text,
@@ -426,6 +435,9 @@ class _RegisterPageState extends State<RegisterPage> {
                             }
                             print(response.statusCode);
                             if (response.statusCode == 200) {
+                              setState(() {
+                                isloading = false;
+                              });
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(
@@ -435,15 +447,64 @@ class _RegisterPageState extends State<RegisterPage> {
                                   ),
                                 ),
                               );
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => LoginPage(
-                                          // isLoggedin: true,
-                                          //solde: 0,
-                                          //  numTelephone:
-                                          // _numTelEditingController.text,
-                                          )));
+                              Timer(Duration(seconds: 3), () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => LoginPage()));
+                                // print("Yeah, this line is printed after 3 seconds");
+                              });
+                            } else if (response.statuCode == 401) {
+                              setState(() {
+                                isloading = false;
+                              });
+                              showDialog(
+                                  // barrierDismissible: false,
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text("Alert"),
+                                      content:
+                                          Text("Cet utilisateur existe déja"),
+                                      actions: <Widget>[
+                                        MaterialButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                              /*Navigator.pushAndRemoveUntil(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                        builder:
+                                                                            (context) =>
+                                                                                LoginPage()));*/
+                                            },
+                                            child: Text("ok"))
+                                      ],
+                                    );
+                                  });
+                            } else {
+                              showDialog(
+                                  // barrierDismissible: false,
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text("Alert"),
+                                      content:
+                                          Text("Erreur! Veuillez réessayer"),
+                                      actions: <Widget>[
+                                        MaterialButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                              /*Navigator.pushAndRemoveUntil(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                        builder:
+                                                                            (context) =>
+                                                                                LoginPage()));*/
+                                            },
+                                            child: Text("ok"))
+                                      ],
+                                    );
+                                  });
                             }
                           }
                         },
@@ -462,6 +523,12 @@ class _RegisterPageState extends State<RegisterPage> {
                       SizedBox(
                         height: 20,
                       ),
+                      isloading
+                          ? CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                  Color(0xff3b22a1)),
+                            )
+                          : SizedBox(),
                       Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
